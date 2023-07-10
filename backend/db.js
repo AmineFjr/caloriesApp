@@ -1,4 +1,4 @@
-const { Sequelize} = require('sequelize');
+const { Sequelize } = require('sequelize');
 
 require('dotenv').config();
 
@@ -10,7 +10,7 @@ const dataBase = new Sequelize(process.env.TABLE_BDD, process.env.USER_BDD, proc
     }
 })
 
-module.exports = dataBase.authenticate().then(
+dataBase.authenticate().then(
     () => {
         console.log('Connexion Réussie');
     },
