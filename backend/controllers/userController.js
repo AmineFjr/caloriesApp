@@ -1,11 +1,11 @@
-const { DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 const userModel = require('../models/userModel');
 const db = require ('../db')
 const User = userModel(db, DataTypes);
 const bcrypt = require("bcrypt");
 
 const jwt = require('jsonwebtoken');
-const {ValidationError} = require("sequelize");
+const { ValidationError } = require("sequelize");
 
 exports.singUp = (req, res) => {
     bcrypt.hash(req.body.password, 10).then(

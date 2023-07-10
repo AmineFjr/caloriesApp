@@ -1,8 +1,14 @@
+const recipeModel = require('../models/recipeModel');
+
 async function getAllRecipes(req, res){
     try {
-    }
-    catch(err){
-        console.log(err)
+        // Logique pour récupérer les données des ingrédients depuis la source de données
+        let recipes = await recipeModel.findAll({}); // Supposons que vous utilisez une base de données et un modèle appelé IngredientModel
+
+        // Envoyer les données des ingrédients en tant que réponse
+        (recipes) ? res.status(200).json({recipes}) : res.status(200).json({message:"NO_DATA"});
+    } catch(err) {
+        res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
 

@@ -6,10 +6,9 @@ async function getAllIngredients(req, res){
         let ingredients = await ingredientModel.findAll({}); // Supposons que vous utilisez une base de données et un modèle appelé IngredientModel
 
         // Envoyer les données des ingrédients en tant que réponse
-        res.status(200).json({ ingredients });
-    }
-    catch(err) {
-        console.log(err)
+        (ingredients) ? res.status(200).json({ingredients}) : res.status(200).json({message:"NO_DATA"});
+    } catch(err) {
+        res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
 
@@ -37,9 +36,8 @@ async function getIngredientById(req, res){
     try {
         let id  = req.params.id;
         let ingredient = await ingredientModel.findOne({ where: { id : id } });
-        res.status(200).json({ ingredient });
-    }
-    catch(err) {
+        (ingredient) ? res.status(200).json({ingredient}) : res.status(200).json({message:"NO_DATA"});
+    } catch(err) {
         res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
@@ -57,8 +55,7 @@ async function updateIngredientById(req, res){
 
         await ingredient.save();
         res.status(200).json({ ingredient });
-    }
-    catch (err){
+    } catch (err){
         res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
