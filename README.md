@@ -135,7 +135,7 @@ Explanation of directories and files:
 
 * node/express
 ```sh
-$ cd ..
+$ cd backend
 ```
 
 * npm
@@ -145,7 +145,7 @@ $ npm install
 
 * vue/quasar
 ```sh
-$ cd ..
+$ cd ../frontend
 ```
 
 * yarn 
