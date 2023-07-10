@@ -6,7 +6,7 @@
       style="height: 1200px"
       class="shadow-2 rounded-borders"
     >
-      <q-header elevated class="bg-cyan">
+      <q-header elevated class="bg-teal-6">
         <q-toolbar>
           <q-btn flat round dense to="/" icon="home" />
           <q-btn
