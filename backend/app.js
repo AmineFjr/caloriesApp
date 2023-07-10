@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 
 const userRoute = require('./routes/userRoute')
+const userIngredient = require('./routes/ingredientRoute')
 
 app.use(express.json());
 
@@ -14,10 +15,10 @@ app.use((req, res, next) => {
 });
 
 // Corps des requêtes des req.body
-
 app.use(express.json());
 
 app.use('/api/user', userRoute);
+app.use('/api', userIngredient);
 
 
 module.exports = app;

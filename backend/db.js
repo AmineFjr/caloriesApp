@@ -2,15 +2,15 @@ const { Sequelize} = require('sequelize');
 
 require('dotenv').config();
 
-const dataBase = new Sequelize(process.env.Db_name, process.env.Db_user, process.env.Db_password, {
+const dataBase = new Sequelize(process.env.TABLE_BDD, process.env.USER_BDD, process.env.PASSWORD_BDD, {
     host: '127.0.0.1',
     dialect: 'mysql',
     dialectOptions: {
-        socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
+        socketPath: process.env.SOCKET_APP,
     }
 })
 
-module.exports =  dataBase.authenticate().then(
+module.exports = dataBase.authenticate().then(
     () => {
         console.log('Connexion Réussie');
     },
