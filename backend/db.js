@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize} = require('sequelize');
 
 require('dotenv').config();
 
@@ -17,5 +17,7 @@ module.exports =  dataBase.authenticate().then(
 ).catch(error => {
     console.log("Impossible de se connecter à la base de données" + error)
 })
+
+module.exports = dataBase;
 
 
