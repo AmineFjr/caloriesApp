@@ -1,4 +1,4 @@
-const {User} = require('../dataBase/dbConfig');
+const {User} = require('../db');
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const {ValidationError} = require("sequelize");
