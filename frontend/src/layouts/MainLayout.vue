@@ -12,7 +12,7 @@
           <q-btn
             color="white"
             flat
-            to="/liste"
+            to="/recipes"
             label="Les recettes"
           />
           <q-space />
