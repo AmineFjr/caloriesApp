@@ -32,9 +32,9 @@
 
 ### Contributors
 
- * Developers Node : Nalvac Atinhounon <vacna1997@gmail.com> / Amine Fajry <fajry39@gmail.com>
- * Developer Vue : Robin Coblentz <robin.coblentz.26@gmail.com> / Nadia Schwaller <nadia1.schwaller@gmail.com>
- * Project manager : Nadia Schwaller <nadia1.schwaller@gmail.com>
+ * **Developers Node :** Nalvac Atinhounon <vacna1997@gmail.com> / Amine Fajry <fajry39@gmail.com>
+ * **Developer Vue :** Robin Coblentz <robin.coblentz.26@gmail.com> / Nadia Schwaller <nadia1.schwaller@gmail.com>
+ * **Project manager :** Nadia Schwaller <nadia1.schwaller@gmail.com>
  
 ### Description
 
@@ -156,16 +156,8 @@ $ yarn
 ### Installation
 
 
-
-5. Compile & watch
-- go to public/web/themes/custom/conectus
-- To compile assets: `npm run prod` or `gulp`
-- To watch changes: `gulp serve`
-
 ## Test
 
 
 ## Frequently asked questions
 
-- Comment voir liste des icones "boxicons" ?
-    - Aller ds ```theme/cosmeticvalley_bo/node_modules/boxicons``` ouvrir le fichier "dev.box-icon-element.html" dans le navigateur (il faudra aussi peut être remplacer "/dist/boxicons.js" par "./dist/boxicons.js" dans ce fichier)
