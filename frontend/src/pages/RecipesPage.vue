@@ -22,7 +22,7 @@
       <q-separator dark />
 
       <q-card-actions>
-        <q-btn flat :to="{ name: 'recipeEdit', params: { id: recipe.id } }">Modifier</q-btn>
+        <q-btn flat :to="`/recipeEdit/${recipe.id}`">Modifier</q-btn>
         <q-btn flat>supprimer</q-btn>
       </q-card-actions>
     </q-card>
