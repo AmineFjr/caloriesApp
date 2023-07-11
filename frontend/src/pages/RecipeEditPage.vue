@@ -8,13 +8,13 @@
       <div class="q-mt-md" v-for="(ingredient, index) in recipe.ingredients" :key="index">
         <div class="q-gutter-sm row items-start">
           <q-input filled v-model="ingredient.name" label="Ingrédient" style="width: 30%;" readonly />
-          <q-input filled v-model.number="ingredient.quantity" label="Quantité" style="width: 30%;" />
+          <q-input color="teal-4" filled v-model.number="ingredient.quantity" label="Quantité" style="width: 30%;" />
           <q-btn round color="teal-6" icon="delete" @click="removeIngredient(index)" />
         </div>
       </div>
 
       <div class="q-gutter-sm row items-start">
-        <q-input filled v-model="newIngredientName" label="Nouvel Ingrédient" style="width: 30%;" />
+        <q-select color="teal-4" filled v-model="selectedIngredientId" :options="ingredients"  option-value="id" option-label="name" label="Nouvel Ingrédient" style="width: 30%;" />
         <q-btn class="q-ml-sm" round color="teal-6" icon="add" @click="addNewIngredient" />
       </div>
 
@@ -22,10 +22,8 @@
         <div class="q-gutter-sm row items-start">
           <q-input filled v-model="newIngredient.name" label="Ingrédient" style="width: 30%;" readonly />
           <q-input filled v-model.number="newIngredient.quantity" label="Quantité" style="width: 30%;" />
-        </div>
+        </div>  
       </div>
-
-
       <q-btn class="q-mt-md" type="submit" color="teal-6" label="Save" />
     </q-form>
   </q-page>
@@ -33,11 +31,20 @@
 
 <script>
 export default {
+  setup(){
+    return{
+      ingredients: [
+        { id: 4, name: 'Fraise' },
+        { id: 5, name: 'Lait' },
+        // Ajoutez d'autres ingrédients ici
+      ],
+    }
+  },
   data() {
     return {
       recipes: [
         {
-          id: 1,
+          id: 2,
           title: 'Tarte aux pommes',
           author: 'John Doe',
           date: '27/05/2023',
@@ -49,9 +56,10 @@ export default {
         },
       ],
       recipe: null,
-      newIngredientName: '',
+      selectedIngredientId: null,
       newIngredient: { name: '', quantity: 0 },
       showNewIngredientInputs: false,
+      
     };
   },
 
@@ -78,10 +86,11 @@ export default {
     },
 
     addNewIngredient() {
-      if (this.newIngredientName) {
-        this.newIngredient.name = this.newIngredientName;
+      if (this.selectedIngredientId) {
+        const selectedIngredient = this.ingredients.find(ingredient => ingredient.id === this.selectedIngredientId.id);
+        this.newIngredient.name = selectedIngredient.name;
         this.recipe.ingredients.push({ ...this.newIngredient });
-        this.newIngredientName = '';
+        this.selectedIngredientId = null;
         this.newIngredient = { name: '', quantity: 0 };
         this.showNewIngredientInputs = false;
       }
