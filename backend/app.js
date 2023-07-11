@@ -30,12 +30,10 @@ const user = require('./models/userModel');
 
 try {
     sequelize.authenticate().then(() => {});
-
+    sequelize.sync().then(() => {})
     recipe.belongsToMany(ingredient, { through: 'recipe_ingredient' });
     ingredient.belongsToMany(recipe, { through: 'recipe_ingredient' });
-    
     user.hasMany(recipe);
-    sequelize.sync().then(() => {})
 } catch (error) {
     console.error('Unable to connect to the database:', error);
 }

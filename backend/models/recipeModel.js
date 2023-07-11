@@ -10,10 +10,6 @@ const recipe = sequelize.define('recipe', {
             type: DataTypes.STRING,
             allowNull: false
         },
-        publication_date:{
-            type: DataTypes.DATE,
-            allowNull: false
-        },
 });
 
 module.exports = recipe;
