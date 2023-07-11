@@ -1,28 +1,24 @@
 <template>
   <q-page class="row justify-center q-pt-lg">
     <q-form class="q-gutter-md" style="width: 60%;" @submit="saveRecipe">
-      <q-input filled v-model="recipe.title" label="Title" readonly/>
-      <q-input filled v-model="recipe.author" label="Author" readonly/>
+      <q-input filled v-model="recipe.title" label="Titre" readonly/>
+      <q-input filled v-model="recipe.author" label="Auteur" readonly/>
       <q-input filled v-model="recipe.date" label="Date" readonly />
 
       <div class="q-mt-md" v-for="(ingredient, index) in recipe.ingredients" :key="index">
         <div class="q-gutter-sm row items-start">
-          <q-input filled v-model="ingredient.name" label="Ingredient name" style="width: 30%;" />
-          <q-input filled v-model.number="ingredient.kcal" label="Kcal" style="width: 30%;" />
-          <q-input filled v-model.number="ingredient.gramme" label="Gramme" style="width: 30%;" />
+          <q-input filled v-model="ingredient.name" label="Ingrédient" style="width: 30%;" readonly />
+          <q-input filled v-model.number="ingredient.quantity" label="Quantité" style="width: 30%;" />
+          <q-btn round color="teal-6" icon="delete" @click="removeIngredient(index)" />
         </div>
       </div>
 
-      <q-btn class="q-mt-md" round color="primary" icon="add" @click="addIngredient" />
+      <q-btn class="q-mt-md" round color="teal-6" icon="add" @click="addIngredient" />
 
-      <q-input class="q-mt-md" filled v-model="totalKcalComputed" label="Total kcal" readonly />
-
-      <q-btn class="q-mt-md" type="submit" color="primary" label="Save" />
+      <q-btn class="q-mt-md" type="submit" color="teal-6" label="Save" />
     </q-form>
   </q-page>
 </template>
-
-
 
 <script>
 export default {
@@ -34,24 +30,15 @@ export default {
           title: 'Tarte aux pommes',
           author: 'John Doe',
           date: '27/05/2023',
-          totalKcal: 500,
           ingredients: [
-            { name: 'Pomme', kcal: 52, gramme: 60 },
-            { name: 'Sucre', kcal: 200, gramme: 5550 },
-            { name: 'Pâte', kcal: 160, gramme: 50 },
-            // Autres ingrédients...
+            { id: 1, name: 'Pomme', quantity: 60 },
+            { id: 2, name: 'Sucre', quantity: 5550 },
+            { id: 3, name: 'Pâte', quantity: 50 },
           ],
-        }
-        // Autres recettes...
+        },
       ],
-      recipe: null
+      recipe: null,
     };
-  },
-
-  computed: {
-    totalKcalComputed() {
-      return this.recipe.ingredients.reduce((total, ingredient) => total + (ingredient.kcal || 0), 0);
-    }
   },
 
   created() {
@@ -61,7 +48,11 @@ export default {
 
   methods: {
     addIngredient() {
-      this.recipe.ingredients.push({ name: '', kcal: 0, gramme: 0 });
+      this.recipe.ingredients.push({ name: '', quantity: 0 });
+    },
+
+    removeIngredient(index) {
+      this.recipe.ingredients.splice(index, 1);
     },
 
     saveRecipe() {
