@@ -33,8 +33,8 @@ try {
     sequelize.authenticate().then(() => {});
     sequelize.sync().then(() => {})
     user.hasMany(recipe);
-    recipe.belongsToMany(ingredient, { through: 'recipe_ingredient' });
-    ingredient.belongsToMany(recipe, { through: 'recipe_ingredient' });
+    recipe.belongsToMany(ingredient, { through: 'recipe_ingredient' ,  as: 'ingredients' });
+    ingredient.belongsToMany(recipe, { through: 'recipe_ingredient', as: 'recipe'  });
 } catch (error) {
     console.error('Unable to connect to the database:', error);
 }
