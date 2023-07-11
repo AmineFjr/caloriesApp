@@ -1,18 +1,23 @@
 const recipeModel = require('../models/recipeModel');
 const recipeIngredientModel = require('../models/recipeIngredientModel');
 async function getAllRecipes(req, res){
-    try {
-        let recipes = await recipeModel.findAll({});
-        (recipes) ? res.status(200).json({recipes}) : res.status(200).json({message:"NO_DATA"});
-    } catch(err) {
-        res.status(500).json({ err, message: "Une erreur s'est produite" });
-    }
+    recipeModel.findAll( {
+        include: 'ingredients' // Inclure les ingrédients liés à la recette
+    }).then(
+        (recipe) => {
+            return res.status(200).json(recipe);
+        }
+    ).catch(error => {
+        const message = 'Une erreur est survenue lors de la recherche des ingrédients';
+        return res.status(404).json({message, error})
+    })
 }
 
 // Contrôleur pour récupérer une recette par son identifiant
 async function getRecipeById (req, res) {
     try {
-        const { recipeId } = req.params;
+        const { recipeId } = req.params.id;
+        console.log(recipeId)
 
         // Recherche de la recette par son identifiant
         const recipe = await recipeModel.findByPk(recipeId, {
@@ -28,7 +33,7 @@ async function getRecipeById (req, res) {
         console.error('Erreur lors de la récupération de la recette :', error);
         return res.status(500).json({ message: 'Une erreur est survenue lors de la récupération de la recette.' });
     }
-};
+}
 
 async function addRecipes(req, res) {
     try {
