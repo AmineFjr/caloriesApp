@@ -16,7 +16,8 @@ async function getAllRecipes(req, res){
 // Contrôleur pour récupérer une recette par son identifiant
 async function getRecipeById (req, res) {
     try {
-        const { recipeId } = req.params;
+        const { recipeId } = req.params.id;
+        console.log(recipeId)
 
         // Recherche de la recette par son identifiant
         const recipe = await recipeModel.findByPk(recipeId, {
