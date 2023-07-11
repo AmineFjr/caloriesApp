@@ -34,6 +34,7 @@ try {
     recipe.belongsToMany(ingredient, { through: 'recipe_ingredient' });
     ingredient.belongsToMany(recipe, { through: 'recipe_ingredient' });
     user.hasMany(recipe);
+} catch (error) {
     console.error('Unable to connect to the database:', error);
 }
 
