@@ -13,7 +13,18 @@
         </div>
       </div>
 
-      <q-btn class="q-mt-md" round color="teal-6" icon="add" @click="addIngredient" />
+      <div class="q-gutter-sm row items-start">
+        <q-input filled v-model="newIngredientName" label="Nouvel Ingrédient" style="width: 30%;" />
+        <q-btn class="q-ml-sm" round color="teal-6" icon="add" @click="addNewIngredient" />
+      </div>
+
+      <div v-if="showNewIngredientInputs">
+        <div class="q-gutter-sm row items-start">
+          <q-input filled v-model="newIngredient.name" label="Ingrédient" style="width: 30%;" readonly />
+          <q-input filled v-model.number="newIngredient.quantity" label="Quantité" style="width: 30%;" />
+        </div>
+      </div>
+
 
       <q-btn class="q-mt-md" type="submit" color="teal-6" label="Save" />
     </q-form>
@@ -38,6 +49,9 @@ export default {
         },
       ],
       recipe: null,
+      newIngredientName: '',
+      newIngredient: { name: '', quantity: 0 },
+      showNewIngredientInputs: false,
     };
   },
 
@@ -60,6 +74,16 @@ export default {
       const index = this.recipes.findIndex(recipe => recipe.id == this.recipe.id);
       if (index != -1) {
         this.recipes[index] = this.recipe;
+      }
+    },
+
+    addNewIngredient() {
+      if (this.newIngredientName) {
+        this.newIngredient.name = this.newIngredientName;
+        this.recipe.ingredients.push({ ...this.newIngredient });
+        this.newIngredientName = '';
+        this.newIngredient = { name: '', quantity: 0 };
+        this.showNewIngredientInputs = false;
       }
     },
   },
