@@ -77,8 +77,11 @@ async function updateRecipeById(req, res) {
 
 async function deleteRecipe(req, res) {
     try {
+        let id = req.params.id;
+        let deleted = await recipeModel.destroy({ where: { id: id } });
+        (deleted === 1) ? res.status(200).json({ error: false, message: "DELETED"}) : res.status(200).json({ error: true, message: "NO_DELETED" });
     } catch (e) {
-        console.error(e)
+        res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
 

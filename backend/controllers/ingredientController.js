@@ -87,7 +87,7 @@ async function deleteIngredient(req, res) {
     try {
         let id = req.params.id;
         let deleted = await ingredientModel.destroy({ where: { id: id } });
-        (deleted === 1) ? res.status(200).json({ error: false, message: deleted }) : res.status(200).json({ error: true, message: "NO_DELETED" });
+        (deleted === 1) ? res.status(200).json({ error: false, message: "DELETED" }) : res.status(200).json({ error: true, message: "NO_DELETED" });
     } catch (e) {
         res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
