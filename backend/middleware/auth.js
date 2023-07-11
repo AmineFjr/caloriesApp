@@ -6,6 +6,7 @@ module.exports = (req, res, next) =>  {
     if (!authorizationHeader) {
         const message =  'Veuillez vous connecter pour obtenir un jeton d\'authentification.'
         return res.status(401).json({message});
+    } else {
         const token = authorizationHeader.split(' ')[1];
         const decodeToken = jwt.verify(
             token,
