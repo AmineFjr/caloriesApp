@@ -1,7 +1,5 @@
 const recipeModel = require('../models/recipeModel');
-const ingredientModel = require('../models/ingredientModel')
 const recipeIngredientModel = require('../models/recipeIngredientModel');
-const {DataTypes} = require("sequelize");
 async function getAllRecipes(req, res){
     try {
         // Logique pour récupérer les données des ingrédients depuis la source de données
@@ -37,25 +35,27 @@ async function getRecipeById (req, res) {
 
 async function addRecipes(req, res) {
     try {
-                const { title, author, ingredients, quantity, step } = req.body;
+                const { title,userId, ingredients } = req.body;
 
                 // Création de la recette dans la base de données
                 recipeModel.create({
                     title,
-                    author,
-                    ingredients,
+                    userId
                 }).then(
                     (recipe) => {
-                        recipeIngredientModel.create( {
-                            ingredientId: ingredients,
-                            recipeId: recipe.id,
-                            quantity: quantity,
-                            step: step,
-                        })
+                        for(let ingredient of ingredients) {
+                            recipeIngredientModel.create( {
+                                ingredientId: ingredient.id,
+                                recipeId: recipe.id,
+                                quantity: ingredient.quantity,
+                                step: ingredient.step || null,
+                            })
+                        }
                     }
                 ).then(
                     (response) => {
-                        return res.status(201).json(response);
+                        const message = 'Reccette ajoutée';
+                        return res.status(201).json({message});
                     }
                 );
 
