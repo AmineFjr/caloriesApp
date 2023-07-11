@@ -30,8 +30,10 @@ const user = require('./models/userModel');
 
 try {
     sequelize.authenticate().then(() => {});
+
     recipe.belongsToMany(ingredient, { through: 'recipe_ingredient' });
     ingredient.belongsToMany(recipe, { through: 'recipe_ingredient' });
+    
     user.hasMany(recipe);
     sequelize.sync().then(() => {})
 } catch (error) {
