@@ -1,4 +1,7 @@
 const recipeModel = require('../models/recipeModel');
+const ingredientModel = require('../models/ingredientModel')
+const recipeIngredientModel = require('../models/recipeIngredientModel');
+const {DataTypes} = require("sequelize");
 async function getAllRecipes(req, res){
     try {
         // Logique pour récupérer les données des ingrédients depuis la source de données
@@ -34,10 +37,31 @@ async function getRecipeById (req, res) {
 
 async function addRecipes(req, res) {
     try {
+                const { title, author, ingredients, quantity, step } = req.body;
 
+                // Création de la recette dans la base de données
+                recipeModel.create({
+                    title,
+                    author,
+                    ingredients,
+                }).then(
+                    (recipe) => {
+                        recipeIngredientModel.create( {
+                            ingredientId: ingredients,
+                            recipeId: recipe.id,
+                            quantity: quantity,
+                            step: step,
+                        })
+                    }
+                ).then(
+                    (response) => {
+                        return res.status(201).json(response);
+                    }
+                );
 
     } catch (err) {
-
+        console.error('Erreur lors de l\'ajout de la recette :', error);
+        return res.status(500).json({ message: 'Une erreur est survenue lors de l\'ajout de la recette.' });
     }
 }
 
@@ -64,4 +88,4 @@ async function analyzeRecipe(req, res){
     }
 }
 
-module.exports = {getAllRecipes, getRecipeById, updateRecipeById, deleteRecipe, analyzeRecipe};
+module.exports = {getAllRecipes, getRecipeById, updateRecipeById, deleteRecipe, analyzeRecipe, addRecipes};
