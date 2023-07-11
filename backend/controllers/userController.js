@@ -45,11 +45,10 @@ exports.sign = (req, res) => {
                     const token = jwt.sign(
                         {userId: user.id},
                         `${process.env.PRIVATE_KEY}`,
-                        {algorithm: "HS256", expiresIn: "24h",}
+                        {algorithm: "HS256", expiresIn: "24h"}
                     )
-
-                    const message = `Connexion réussie`;
-                    return res.status(200).json({message, data: user, token})
+                    
+                    return res.status(200).json({token})
                 }
             ).catch((error) => {
                 const message = `L'utilisateur n'a pas pu se connecté`;

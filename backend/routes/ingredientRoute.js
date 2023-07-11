@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ingredientController = require('../controllers/ingredientController');
-//const { checkAuth } = require("../middlewares/auth");
+//const userAuth = require('../middleware/auth')
 
 router.get('/ingredients', ingredientController.getAllIngredients);
 router.post('/ingredient', ingredientController.addIngredient);

@@ -6,10 +6,6 @@ const ingredient = sequelize.define('ingredient', {
         type: DataTypes.STRING,
         allowNull: false    
     },
-    quantity:{
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     unit:{
         type: DataTypes.STRING,
         allowNull: false
@@ -18,6 +14,11 @@ const ingredient = sequelize.define('ingredient', {
         type: DataTypes.INTEGER,
         allowNull: false
     }
+},     
+{
+    timestamps: false,
+    createdAt: false,
+    updatedAt: false,
 });
 
 module.exports = ingredient;
