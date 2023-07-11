@@ -1,7 +1,4 @@
-const { DataTypes } = require('sequelize');
-const userModel = require('../models/userModel');
-const db = require ('../db')
-const User = userModel(db, DataTypes);
+const User = require('../models/userModel');
 const bcrypt = require("bcrypt");
 
 const jwt = require('jsonwebtoken');

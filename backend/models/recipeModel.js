@@ -1,5 +1,7 @@
-module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('recipe', {
+const sequelize = require("../db.js")
+const { DataTypes } = require('sequelize');
+
+const recipe = sequelize.define('recipe', {
         title:{
             type: DataTypes.STRING,
             allowNull: false    
@@ -12,9 +14,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: false
         },
-        ingredients:{
-            type: DataTypes.ARRAY(DataTypes.JSON),
-            allowNull: false
-        },
-    })
-}
+});
+
+module.exports = recipe;
