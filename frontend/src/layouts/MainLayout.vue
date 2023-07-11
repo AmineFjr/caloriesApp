@@ -1,8 +1,26 @@
 <template>
   <div class="q-pa-md">
-    <q-layout style="margin: 0px; height: 100%">
+    <q-layout
+      view="lHh lpr lFf"
+      container
+      style="height: 1200px"
+      class="shadow-2 rounded-borders"
+    >
+      <q-header elevated class="bg-teal-6">
+        <q-toolbar>
+          <q-btn flat round dense to="/" icon="home" />
+          <q-btn
+            color="white"
+            flat
+            to="/recipes"
+            label="Les recettes"
+          />
+          <q-space />
+        </q-toolbar>
+      </q-header>
+
       <q-page-container>
-        <q-page class="q-pa-md" style="margin: 0px; height: 100%">
+        <q-page class="q-pa-md">
           <router-view />
         </q-page>
       </q-page-container>
@@ -11,11 +29,8 @@
 </template>
 
 <script>
-// import NavbarComponants from "../components/NavbarComponants.vue";
-
 export default {
   name: "MainLayout",
-  components: {},
   setup() {
     return {};
   },
