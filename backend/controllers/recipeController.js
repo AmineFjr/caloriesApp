@@ -1,5 +1,4 @@
 const recipeModel = require('../models/recipeModel');
-
 async function getAllRecipes(req, res){
     try {
         // Logique pour récupérer les données des ingrédients depuis la source de données
@@ -13,11 +12,11 @@ async function getAllRecipes(req, res){
 }
 
 async function getRecipeById(req, res){
-    try {
-    }
-    catch(err){
-        console.log(err)
-    }
+    recipeModel.findOne({
+        where: {
+            id: req.params.id,
+        }
+    }).then()
 }
 
 async function updateRecipeById(req, res){

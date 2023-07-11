@@ -5,6 +5,7 @@ const userRoute = require('./routes/userRoute')
 const ingredientRoute = require('./routes/ingredientRoute')
 const recipeRoute = require('./routes/recipeRoute')
 const sequelize = require ('./db');
+const recipeIngredientModel = require ('./models/recipeIngredientModel')
 
 app.use(express.json());
 
@@ -30,10 +31,10 @@ const user = require('./models/userModel');
 
 try {
     sequelize.authenticate().then(() => {});
+    sequelize.sync().then(() => {})
+    user.hasMany(recipe);
     recipe.belongsToMany(ingredient, { through: 'recipe_ingredient' });
     ingredient.belongsToMany(recipe, { through: 'recipe_ingredient' });
-    user.hasMany(recipe);
-    sequelize.sync().then(() => {})
 } catch (error) {
     console.error('Unable to connect to the database:', error);
 }
