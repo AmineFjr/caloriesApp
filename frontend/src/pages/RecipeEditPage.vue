@@ -37,6 +37,8 @@
 
 <script>
 import { useRecipesStore } from "../stores/recipe.js"; // Importez votre store
+import { useIngredientsStore } from "../stores/ingredient.js"; // Importez votre store pour les ingrédients
+
 export default {
   data() {
     return {
@@ -57,33 +59,40 @@ export default {
 
   async created() {
     const { id } = this.$route.params;
-    const recipeStore = useRecipesStore(); // Utilisez votre store
+    const recipeStore = useRecipesStore(); // Utilisez le store pour les recettes
+    const ingredientStore = useIngredientsStore(); // Utilisez le store pour les ingrédients
 
     try {
-      this.recipe = await recipeStore.fetchRecipeById(id); // Remplissez votre recette avec des données réelles
+      this.recipe = await recipeStore.fetchRecipeById(id);
       this.recipe.author = this.recipe.userId; // Utilisez userId comme author
 
       // Formatez la date
       const date = new Date(this.recipe.createdAt);
       this.recipe.date = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`; // Utilisez createdAt comme date
 
-      // Ajoutez cette boucle pour extraire la quantité de chaque ingrédient
-      this.recipe.ingredients = this.recipe.ingredients.map(ingredient => ({
-        ...ingredient,
-        quantity: ingredient.recipe_ingredient.quantity, // Extraire la quantité de l'ingrédient
-        unit: ingredient.unit // Extraire l'unité de l'ingrédient
-      }));
-
     } catch (error) {
       console.error("Error fetching recipe: ", error);
     }
-      
+        
     try {
-      this.ingredients = await recipeStore.fetchIngredients(); // Suppose que vous ayez une fonction fetchIngredients dans votre store pour récupérer tous les ingrédients disponibles
+      let result = await ingredientStore.fetchIngredients();
+      this.ingredients = result.ingredients;
+      console.log(this.ingredients);
     } catch (error) {
       console.error("Error fetching ingredients: ", error);
     }
+
+    this.recipe.ingredients = this.recipe.ingredients.map(ingredient => {
+      const storeIngredient = this.ingredients.find(storeIng => storeIng.id === ingredient.id);
+      return {
+        ...ingredient,
+        quantity: ingredient.recipe_ingredient.quantity, // Extraire la quantité de l'ingrédient
+        unit: storeIngredient ? storeIngredient.unit : '' // Utiliser l'unité du store si elle existe, sinon utiliser une chaîne vide
+      };
+    });
   },
+
+
 
   methods: {
     addIngredient() {
@@ -147,6 +156,7 @@ export default {
 
         this.newIngredient.id = selectedIngredient.id;
         this.newIngredient.name = selectedIngredient.name;
+        this.newIngredient.unit = selectedIngredient.unit; // Ajoutez l'unité ici
         this.recipe.ingredients.push({ ...this.newIngredient });
         this.selectedIngredientId = null;
         this.newIngredient = { id: null, name: '', quantity: 0 };
