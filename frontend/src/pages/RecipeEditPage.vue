@@ -9,7 +9,8 @@
         <div class="q-gutter-sm row items-start">
           <q-input type="hidden" v-model="ingredient.id" />
           <q-input filled v-model="ingredient.name" label="Ingrédient" style="width: 30%;" readonly />
-          <q-input color="teal-4" filled v-model.number="ingredient.quantity" :label="`Quantité (${getUnitText(ingredient.id)})`" style="width: 30%;" />
+          <q-input color="teal-4" filled v-model.number="ingredient.quantity" :label="`Quantité (${ingredient.unit})`" style="width: 30%;" />
+
           <q-btn round color="teal-6" icon="delete" @click="removeIngredient(index)" />
         </div>
       </div>
@@ -35,46 +36,63 @@
 </template>
 
 <script>
+import { useRecipesStore } from "../stores/recipe.js"; // Importez votre store
+import { useIngredientsStore } from "../stores/ingredient.js"; // Importez votre store pour les ingrédients
+
 export default {
-  setup() {
-    return {
-      ingredients: [
-        { id: 4, name: 'Fraise', unit: "gramme" },
-        { id: 5, name: 'Lait', unit: "centilitre"},
-        { id: 1, name: 'Pomme', unit: "gramme"},
-        { id: 2, name: 'Sucre', unit: "gramme"},
-        { id: 3, name: 'Pâte', unit: "gramme"}
-        // Ajoutez d'autres ingrédients ici
-      ],
-    };
-  },
   data() {
     return {
-      recipes: [
-        {
-          id: 2,
-          title: 'Tarte aux pommes',
-          author: 'John Doe',
-          date: '27/05/2023',
-          ingredients: [
-            { id: 1, name: 'Pomme', quantity: 60 },
-            { id: 2, name: 'Sucre', quantity: 5550 },
-            { id: 3, name: 'Pâte', quantity: 50 },
-          ],
-        },
-      ],
-      recipe: null,
+      recipe: {
+        id: null,
+        title: '',
+        author: '',
+        date: '',
+        ingredients: [],
+      },
+      ingredients: [], // sera rempli avec des données réelles depuis le serveur
       selectedIngredientId: null,
       newIngredient: { id: null, name: '', quantity: 0 },
       showNewIngredientInputs: false,
-      duplicateIngredientError: false, // Ajout de la propriété pour afficher l'erreur
+      duplicateIngredientError: false,
     };
   },
 
-  created() {
+  async created() {
     const { id } = this.$route.params;
-    this.recipe = this.recipes.find((recipe) => recipe.id == id);
+    const recipeStore = useRecipesStore(); // Utilisez le store pour les recettes
+    const ingredientStore = useIngredientsStore(); // Utilisez le store pour les ingrédients
+
+    try {
+      this.recipe = await recipeStore.fetchRecipeById(id);
+      this.recipe.author = this.recipe.userId; // Utilisez userId comme author
+
+      // Formatez la date
+      const date = new Date(this.recipe.createdAt);
+      this.recipe.date = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`; // Utilisez createdAt comme date
+
+    } catch (error) {
+      // console.error("Error fetching recipe: ", error);
+    }
+        
+    try {
+      let result = await ingredientStore.fetchIngredients();
+      this.ingredients = result.ingredients;
+      // console.log(this.ingredients);
+    } catch (error) {
+      // console.error("Error fetching ingredients: ", error);
+    }
+
+    this.recipe.ingredients = this.recipe.ingredients.map(ingredient => {
+      const storeIngredient = this.ingredients.find(storeIng => storeIng.id === ingredient.id);
+      return {
+        ...ingredient,
+        quantity: ingredient.recipe_ingredient.quantity, // Extraire la quantité de l'ingrédient
+        unit: storeIngredient ? storeIngredient.unit : '' // Utiliser l'unité du store si elle existe, sinon utiliser une chaîne vide
+      };
+    });
   },
+
+
 
   methods: {
     addIngredient() {
@@ -90,7 +108,7 @@ export default {
       return ingredient ? ingredient.unit : '';
     },
 
-    saveRecipe() {
+    async saveRecipe() {
       // Check for duplicate ingredient
       const duplicateIngredient = this.recipe.ingredients.find(
         (ingredient) => ingredient.id === this.newIngredient.id
@@ -101,13 +119,7 @@ export default {
         return; // Arrêter l'exécution de la méthode
       }
 
-      // Update the recipe in the recipes array
-      const index = this.recipes.findIndex((recipe) => recipe.id == this.recipe.id);
-      if (index != -1) {
-        this.recipes[index] = this.recipe;
-      }
-
-      // Prepare the JSON format for logging
+      // Convertir les données de la recette au format souhaité
       const recipeData = {
         id: this.recipe.id,
         ingredients: this.recipe.ingredients.map((ingredient) => ({
@@ -118,7 +130,16 @@ export default {
 
       // Log the JSON data
       console.log(JSON.stringify(recipeData));
+
+      // Utiliser le store pour mettre à jour la recette dans la base de données
+      const recipeStore = useRecipesStore();
+      try {
+        await recipeStore.updateRecipe(recipeData);
+      } catch (error) {
+        console.error("Erreur lors de la sauvegarde de la recette :", error);
+      }
     },
+
 
     addNewIngredient() {
       if (this.selectedIngredientId) {
@@ -138,6 +159,7 @@ export default {
 
         this.newIngredient.id = selectedIngredient.id;
         this.newIngredient.name = selectedIngredient.name;
+        this.newIngredient.unit = selectedIngredient.unit; // Ajoutez l'unité ici
         this.recipe.ingredients.push({ ...this.newIngredient });
         this.selectedIngredientId = null;
         this.newIngredient = { id: null, name: '', quantity: 0 };

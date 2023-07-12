@@ -93,18 +93,38 @@ async function addRecipes(req, res) {
 async function updateRecipe(req, res) {
     try {
 
-        let { id, ingredients } = req.body;
-        let recipe = await recipeIngredientModel.findAll({ where: { recipeId: id } })
+    let { id, ingredients } = req.body;
+    let recipe = await recipeIngredientModel.findAll({ where: { recipeId: id } })
+    let recipeToJson = recipe.map(recipeIngredient => recipeIngredient.toJSON());
+    let recipeIngredient = [];
 
-        for (let ingredient of ingredients) {
-            let recipeIngredientFound = recipe.find(recipeIngredient => recipeIngredient.ingredientId === ingredient.id_ingredient);
-            if (recipeIngredientFound && recipeIngredientFound.ingredientId === ingredient.id_ingredient) {
-              recipeIngredientFound.quantity = ingredient.quantity;
-              await recipeIngredientFound.save();
-            }
-          }
+    for (let ingredient of ingredients) {
+        let recipeIngredientById = await recipeIngredientModel.findAll({ where: { ingredientId: ingredient.id_ingredient } })
+        recipeIngredient.push(...recipeIngredientById);
 
-        res.status(200).json({ recipe });
+        let recipeIngredientFound = recipe.find(recipeIngredient => recipeIngredient.ingredientId === ingredient.id_ingredient);
+
+        if (recipeIngredientFound && recipeIngredientFound.ingredientId === ingredient.id_ingredient) {
+
+            recipeIngredientFound.quantity = ingredient.quantity;
+            await recipeIngredientFound.save();
+
+        } else {
+            await recipeIngredientModel.create({
+                ingredientId: ingredient.id_ingredient,
+                recipeId: id,
+                quantity: ingredient.quantity,
+                step: 1,
+            });
+        }
+    }
+
+    let findRecipeToDelete = recipeToJson.filter(obj1 => !recipeIngredient.some(obj2 => obj1['ingredientId'] === obj2['ingredientId']));
+    findRecipeToDelete.forEach(async (element) => {  
+        await recipeIngredientModel.destroy({ where: { ingredientId: element.ingredientId } });
+    });
+
+    res.status(200).json('Recette Modifiée');
 
     } catch (err) {
         res.status(500).json({ err, message: "Une erreur s'est produite" });
@@ -115,7 +135,7 @@ async function deleteRecipe(req, res) {
     try {
         let id = req.params.id;
         let deleted = await recipeModel.destroy({ where: { id: id } });
-        (deleted === 1) ? res.status(200).json({ error: false, message: "DELETED"}) : res.status(200).json({ error: true, message: "NO_DELETED" });
+        (deleted === 1) ? res.status(200).json({ error: false, message: "DELETED" }) : res.status(200).json({ error: true, message: "NO_DELETED" });
     } catch (e) {
         res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
@@ -147,4 +167,35 @@ async function analyzeRecipe(req, res) {
     }
 }
 
-module.exports = { getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, analyzeRecipe, addRecipes };
+async function addRandomRecipe(req, res) {
+    try {
+        const { userId } = req.body;
+
+        // Création de la recette dans la base de données
+        recipeModel.create({
+            'title': 'Recette aléatoire',
+            userId
+        }).then(
+            (recipe) => {
+                for (let ingredient of ingredients) {
+                    recipeIngredientModel.create({
+                        ingredientId: ingredient.id,
+                        recipeId: recipe.id,
+                        quantity: ingredient.quantity,
+                        step: ingredient.step || null,
+                    })
+                }
+            }
+        ).then(
+            (response) => {
+                const message = 'Reccette ajoutée';
+                return res.status(201).json({ message });
+            }
+        );
+    } catch (err) {
+        console.error('Erreur lors de l\'ajout de la recette :', error);
+        return res.status(500).json({ message: 'Une erreur est survenue lors de l\'ajout de la recette.' });
+    }
+}
+
+module.exports = { getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, analyzeRecipe, addRecipes, addRandomRecipe };

@@ -10,5 +10,6 @@ router.put('/recipe', recipeController.updateRecipe);
 router.get('/recipe/:id', recipeController.getRecipeById);
 router.delete('/recipe/:id', recipeController.deleteRecipe);
 router.get('/recipe/:id/analyze', recipeController.analyzeRecipe);
+router.post('/recipe/random', recipeController.addRandomRecipe);
 
 module.exports = router;

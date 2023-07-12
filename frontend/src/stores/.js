@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const useDonationStore = defineStore("donation", {
   state: () => ({
-    donations: [],
+    recipes: [],
   }),
   actions: {
     // Créer une donation

@@ -143,6 +143,9 @@ $ cd backend
 $ npm install
 ```
 
+* Crée la base de donnée
+* Ajouter le .env
+
 * vue/quasar
 ```sh
 $ cd ../frontend
@@ -154,6 +157,26 @@ $ yarn
 ```
 
 ### Installation
+
+* node/express
+```sh
+$ cd backend
+```
+
+* node
+```sh
+$ npm start
+```
+
+* vue/quasar
+```sh
+$ cd ../frontend
+```
+
+* quasar
+```sh
+$ quasar dev
+```
 
 
 ## Test
