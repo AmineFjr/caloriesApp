@@ -38,6 +38,7 @@
 <script>
 import { useRecipesStore } from "../stores/recipe.js"; // Importez votre store
 import { useIngredientsStore } from "../stores/ingredient.js"; // Importez votre store pour les ingrédients
+import { useRouter } from "vue-router"; // Importer le routeur Vue Router
 
 export default {
   data() {
@@ -61,6 +62,7 @@ export default {
     const { id } = this.$route.params;
     const recipeStore = useRecipesStore(); // Utilisez le store pour les recettes
     const ingredientStore = useIngredientsStore(); // Utilisez le store pour les ingrédients
+    this.router = useRouter();
 
     try {
       this.recipe = await recipeStore.fetchRecipeById(id);
@@ -135,6 +137,7 @@ export default {
       const recipeStore = useRecipesStore();
       try {
         await recipeStore.updateRecipe(recipeData);
+        this.$router.push({ path: "/recipes" });
       } catch (error) {
         console.error("Erreur lors de la sauvegarde de la recette :", error);
       }
