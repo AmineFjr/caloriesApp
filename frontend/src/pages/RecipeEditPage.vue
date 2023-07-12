@@ -71,15 +71,15 @@ export default {
       this.recipe.date = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`; // Utilisez createdAt comme date
 
     } catch (error) {
-      console.error("Error fetching recipe: ", error);
+      // console.error("Error fetching recipe: ", error);
     }
         
     try {
       let result = await ingredientStore.fetchIngredients();
       this.ingredients = result.ingredients;
-      console.log(this.ingredients);
+      // console.log(this.ingredients);
     } catch (error) {
-      console.error("Error fetching ingredients: ", error);
+      // console.error("Error fetching ingredients: ", error);
     }
 
     this.recipe.ingredients = this.recipe.ingredients.map(ingredient => {
@@ -135,7 +135,7 @@ export default {
       };
 
       // Log the JSON data
-      console.log(JSON.stringify(recipeData));
+      // console.log(JSON.stringify(recipeData));
     },
 
     addNewIngredient() {
