@@ -29,6 +29,7 @@
       </div>
 
       <q-btn class="q-mt-md" type="submit" color="teal-6" label="Sauvegarder" />
+      <q-btn class="q-mt-md" flat color="red" label="Réinitialiser" @click="reloadRecipe" />
       
       <p v-if="duplicateIngredientError" style="color: red;">Cet ingrédient est déjà dans la recette.</p>
     </q-form>
@@ -145,6 +146,38 @@ export default {
       }
     },
 
+    async reloadRecipe() {
+      const { id } = this.$route.params;
+      const recipeStore = useRecipesStore();
+
+      try {
+        this.recipe = await recipeStore.fetchRecipeById(id);
+
+        if (!this.recipe) {
+          // Redirection vers la page 404
+          this.router.push({ path: "/404" });
+          return;
+        }
+
+        this.recipe.author = this.recipe.userId;
+
+        const date = new Date(this.recipe.createdAt);
+        this.recipe.date = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+        this.recipe.ingredients = this.recipe.ingredients.map(ingredient => {
+          const storeIngredient = this.ingredients.find(storeIng => storeIng.id === ingredient.id);
+          return {
+            ...ingredient,
+            quantity: ingredient.recipe_ingredient.quantity,
+            unit: storeIngredient ? storeIngredient.unit : ''
+          };
+        });
+
+        this.duplicateIngredientError = false;
+      } catch (error) {
+        console.error("Error reloading recipe: ", error);
+      }
+    },
 
     addNewIngredient() {
       if (this.selectedIngredientId) {
