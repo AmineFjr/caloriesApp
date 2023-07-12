@@ -36,9 +36,9 @@
 </template>
 
 <script>
-import { useRecipesStore } from "../stores/recipe.js"; // Importez votre store
-import { useIngredientsStore } from "../stores/ingredient.js"; // Importez votre store pour les ingrédients
-import { useRouter } from "vue-router"; // Importer le routeur Vue Router
+import { useRecipesStore } from "../stores/recipe.js";
+import { useIngredientsStore } from "../stores/ingredient.js";
+import { useRouter } from "vue-router";
 
 export default {
   data() {
@@ -50,7 +50,7 @@ export default {
         date: '',
         ingredients: [],
       },
-      ingredients: [], // sera rempli avec des données réelles depuis le serveur
+      ingredients: [],
       selectedIngredientId: null,
       newIngredient: { id: null, name: '', quantity: 0 },
       showNewIngredientInputs: false,
@@ -60,41 +60,43 @@ export default {
 
   async created() {
     const { id } = this.$route.params;
-    const recipeStore = useRecipesStore(); // Utilisez le store pour les recettes
-    const ingredientStore = useIngredientsStore(); // Utilisez le store pour les ingrédients
+    const recipeStore = useRecipesStore();
+    const ingredientStore = useIngredientsStore();
     this.router = useRouter();
 
     try {
       this.recipe = await recipeStore.fetchRecipeById(id);
-      this.recipe.author = this.recipe.userId; // Utilisez userId comme author
 
-      // Formatez la date
+      if (!this.recipe) {
+        // Redirection vers la page 404
+        this.router.push({ path: "/404" });
+        return;
+      }
+
+      this.recipe.author = this.recipe.userId;
+
       const date = new Date(this.recipe.createdAt);
-      this.recipe.date = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`; // Utilisez createdAt comme date
-
+      this.recipe.date = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     } catch (error) {
-      // console.error("Error fetching recipe: ", error);
+      console.error("Error fetching recipe: ", error);
     }
-        
+
     try {
-      let result = await ingredientStore.fetchIngredients();
+      const result = await ingredientStore.fetchIngredients();
       this.ingredients = result.ingredients;
-      // console.log(this.ingredients);
     } catch (error) {
-      // console.error("Error fetching ingredients: ", error);
+      console.error("Error fetching ingredients: ", error);
     }
 
     this.recipe.ingredients = this.recipe.ingredients.map(ingredient => {
       const storeIngredient = this.ingredients.find(storeIng => storeIng.id === ingredient.id);
       return {
         ...ingredient,
-        quantity: ingredient.recipe_ingredient.quantity, // Extraire la quantité de l'ingrédient
-        unit: storeIngredient ? storeIngredient.unit : '' // Utiliser l'unité du store si elle existe, sinon utiliser une chaîne vide
+        quantity: ingredient.recipe_ingredient.quantity,
+        unit: storeIngredient ? storeIngredient.unit : ''
       };
     });
   },
-
-
 
   methods: {
     addIngredient() {
