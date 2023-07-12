@@ -9,7 +9,7 @@
       <q-card-section>
         <ul>
           <li v-for="(ingredient, index) in recipe.ingredients" :key="index">
-            {{ ingredient.name }} - {{ ingredient.recipe_ingredient.quantity }}{{ ingredient.unit }} - {{ ingredient.calories }} cal
+            {{ ingredient.name }} - {{ ingredient.recipe_ingredient.quantity }}{{ ingredient.unit }} = {{ ingredient.calories * ingredient.recipe_ingredient.quantity }} calories
           </li>
         </ul>
         <q-separator dark />
@@ -62,7 +62,7 @@ export default {
 <style lang="sass" scoped>
 .my-card
   width: 100%
-  max-width: 250px
+  max-width: 300px
 
 .centered-header 
   text-align: center

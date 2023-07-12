@@ -1,5 +1,6 @@
 const recipeModel = require('../models/recipeModel');
 const recipeIngredientModel = require('../models/recipeIngredientModel');
+const ingredientModel = require('../models/ingredientModel');
 
 async function getAllRecipes(req, res) {
     recipeModel.findAll({
@@ -67,11 +68,31 @@ async function addRecipes(req, res) {
     }
 }
 
-async function updateRecipeById(req, res) {
+async function updateRecipe(req, res) {
     try {
-    }
-    catch (err) {
-        console.log(err)
+
+        let { id, ingredients } = req.body;
+        let recipe = await recipeIngredientModel.findAll({ where: { recipeId: id } })
+
+        for (let ingredient of ingredients) {
+            let recipeIngredientFound = recipe.find(recipeIngredient => recipeIngredient.ingredientId === ingredient.id_ingredient);
+            if (recipeIngredientFound && recipeIngredientFound.ingredientId === ingredient.id_ingredient) {
+              recipeIngredientFound.quantity = ingredient.quantity;
+              await recipeIngredientFound.save();
+            } else {
+                await recipeIngredientModel.create({
+                    ingredientId: ingredient.id_ingredient,
+                    recipeId: id,
+                    quantity: ingredient.quantity,
+                    step: 1,
+                });
+            }
+          }
+
+        res.status(200).json("Recette modifiée");
+
+    } catch (err) {
+        res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
 
@@ -87,10 +108,60 @@ async function deleteRecipe(req, res) {
 
 async function analyzeRecipe(req, res) {
     try {
+        let id = req.params.id;
+        let recipe = await recipeIngredientModel.findAll({ where: { recipeId: id } })
+        if (recipe.length === 0) res.status(401).json("Recette introuvable");
+        
+        let stockIngredieintId = [];
+        let totalOfCalories = 0;
+        let ingredients = [];
+        
+        for (let ingredient of recipe) {
+            stockIngredieintId.push(ingredient.ingredientId);
+        }
+
+        for (let i = 0; i < stockIngredieintId.length; i++) {
+            ingredients.push(await ingredientModel.findOne({ where: { id: stockIngredieintId[i] } }))
+            totalOfCalories += ingredients[i].calories * recipe[i].quantity;
+        }   
+
+        res.status(200).json(totalOfCalories);
     }
     catch (err) {
-        console.log(err)
+        res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
 
-module.exports = { getAllRecipes, getRecipeById, updateRecipeById, deleteRecipe, analyzeRecipe, addRecipes };
+async function addRandomRecipe(req, res) {
+    try {
+        const { userId } = req.body;
+
+        // Création de la recette dans la base de données
+        recipeModel.create({       
+            'title': 'Recette aléatoire',
+            userId
+        }).then(
+            (recipe) => {
+                for (let ingredient of ingredients) {
+                    recipeIngredientModel.create({
+                        ingredientId: ingredient.id,
+                        recipeId: recipe.id,
+                        quantity: ingredient.quantity,
+                        step: ingredient.step || null,
+                    })
+                }
+            }
+        ).then(
+            (response) => {
+                const message = 'Reccette ajoutée';
+                return res.status(201).json({ message });
+            }
+        );
+
+    } catch (err) {
+        console.error('Erreur lors de l\'ajout de la recette :', error);
+        return res.status(500).json({ message: 'Une erreur est survenue lors de l\'ajout de la recette.' });
+    }
+}
+
+module.exports = { getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, analyzeRecipe, addRecipes, addRandomRecipe };
