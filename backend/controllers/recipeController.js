@@ -1,6 +1,7 @@
 const recipeModel = require('../models/recipeModel');
 const recipeIngredientModel = require('../models/recipeIngredientModel');
-const userModel = require ('../models/userModel')
+const userModel = require ('../models/userModel');
+const  ingredientModel = require ('../models/ingredientModel')
 async function getAllRecipes(req, res){
 
     try {
