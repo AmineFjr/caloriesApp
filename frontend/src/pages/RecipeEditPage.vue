@@ -1,6 +1,6 @@
 <template>
   <q-page class="row justify-center q-pt-lg">
-    <q-form class="q-gutter-md" style="width: 60%;" @submit="saveRecipe">
+    <q-form class="q-gutter-md" style="width: 90%;" @submit="saveRecipe">
       <q-input filled v-model="recipe.title" label="Titre" readonly/>
       <q-input filled v-model="recipe.author" label="Auteur" readonly/>
       <q-input filled v-model="recipe.date" label="Date" readonly />
@@ -27,7 +27,7 @@
         </div>  
       </div>
 
-      <q-btn class="q-mt-md" type="submit" color="teal-6" label="Save" />
+      <q-btn class="q-mt-md" type="submit" color="teal-6" label="Sauvegarder" />
       
       <p v-if="duplicateIngredientError" style="color: red;">Cet ingrédient est déjà dans la recette.</p>
     </q-form>
