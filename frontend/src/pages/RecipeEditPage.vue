@@ -56,31 +56,34 @@ export default {
   },
 
   async created() {
-  const { id } = this.$route.params;
-  const recipeStore = useRecipesStore(); // Utilisez votre store
+    const { id } = this.$route.params;
+    const recipeStore = useRecipesStore(); // Utilisez votre store
 
-  try {
-    this.recipe = await recipeStore.fetchRecipeById(id); // Remplissez votre recette avec des données réelles
-    this.recipe.author = this.recipe.userId; // Utilisez userId comme author
-    this.recipe.date = this.recipe.createdAt; // Utilisez createdAt comme date
+    try {
+      this.recipe = await recipeStore.fetchRecipeById(id); // Remplissez votre recette avec des données réelles
+      this.recipe.author = this.recipe.userId; // Utilisez userId comme author
 
-    // Ajoutez cette boucle pour extraire la quantité de chaque ingrédient
-    this.recipe.ingredients = this.recipe.ingredients.map(ingredient => ({
-      ...ingredient,
-      quantity: ingredient.recipe_ingredient.quantity, // Extraire la quantité de l'ingrédient
-      unit: ingredient.unit // Extraire l'unité de l'ingrédient
-    }));
+      // Formatez la date
+      const date = new Date(this.recipe.createdAt);
+      this.recipe.date = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`; // Utilisez createdAt comme date
 
-  } catch (error) {
-    console.error("Error fetching recipe: ", error);
-  }
-    
-  try {
-    this.ingredients = await recipeStore.fetchIngredients(); // Suppose que vous ayez une fonction fetchIngredients dans votre store pour récupérer tous les ingrédients disponibles
-  } catch (error) {
-    console.error("Error fetching ingredients: ", error);
-  }
-},
+      // Ajoutez cette boucle pour extraire la quantité de chaque ingrédient
+      this.recipe.ingredients = this.recipe.ingredients.map(ingredient => ({
+        ...ingredient,
+        quantity: ingredient.recipe_ingredient.quantity, // Extraire la quantité de l'ingrédient
+        unit: ingredient.unit // Extraire l'unité de l'ingrédient
+      }));
+
+    } catch (error) {
+      console.error("Error fetching recipe: ", error);
+    }
+      
+    try {
+      this.ingredients = await recipeStore.fetchIngredients(); // Suppose que vous ayez une fonction fetchIngredients dans votre store pour récupérer tous les ingrédients disponibles
+    } catch (error) {
+      console.error("Error fetching ingredients: ", error);
+    }
+  },
 
   methods: {
     addIngredient() {
