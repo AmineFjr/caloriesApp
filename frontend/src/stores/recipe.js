@@ -20,13 +20,16 @@ export const useRecipesStore = defineStore("recipes", {
     },
     // Lire toutes les recettes
     async fetchRecipes() {
-      try {
-        const response = await axios.get("http://localhost:3000/api/recipes");
-        this.recipes = response.data;
-      } catch (error) {
-        console.error("Erreur lors de la récupération des recettes :", error);
-      }
-    },
+        try {
+          const response = await axios.get("http://localhost:3000/api/recipes");
+          console.log(response.data); // log the fetched recipes
+          this.recipes = response.data;
+          return this.recipes; // You should return the data
+        } catch (error) {
+          console.error('Erreur lors de la récupération des recettes :', error);
+        }
+      },
+      
     // Mettre à jour une recette
     async updateRecipe(updatedRecipe) {
       try {
