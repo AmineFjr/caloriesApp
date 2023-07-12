@@ -61,6 +61,7 @@ async function getIngredientById(req, res) {
         let ingredient = await ingredientModel.findOne({ where: { id: id } });
         (ingredient) ? res.status(200).json({ ingredient }) : res.status(200).json({ message: "NO_DATA" });
     } catch (err) {
+        console.log(err)
         res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
@@ -86,10 +87,25 @@ async function deleteIngredient(req, res) {
     try {
         let id = req.params.id;
         let deleted = await ingredientModel.destroy({ where: { id: id } });
-        (deleted === 1) ? res.status(200).json({ error: false, message: deleted }) : res.status(200).json({ error: true, message: "NO_DELETED" });
+        (deleted === 1) ? res.status(200).json({ error: false, message: "DELETED" }) : res.status(200).json({ error: true, message: "NO_DELETED" });
     } catch (e) {
         res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
 
-module.exports = { getAllIngredients, addIngredient, getIngredientById, updateIngredientById, deleteIngredient };
+async function calculateCalories(req, res) {
+    try {
+        let tableOfId = req.body.id;
+        let totalOfCalories = 0;
+        let ingredients = [];
+        for (let i = 0; i < tableOfId.length; i++) {
+            ingredients.push(await ingredientModel.findOne({ where: { id: tableOfId[i] } }))
+            totalOfCalories += ingredients[i].calories;
+        }   
+        res.status(200).json(totalOfCalories);
+    } catch (err) {
+        res.status(500).json({ err, message: "Une erreur s'est produite" });
+    }
+}
+
+module.exports = { getAllIngredients, addIngredient, getIngredientById, updateIngredientById, deleteIngredient, calculateCalories };
