@@ -9,6 +9,6 @@ router.post('/recipe', recipeController.addRecipes);
 router.put('/recipe', recipeController.updateRecipe);
 router.get('/recipe/:id', recipeController.getRecipeById);
 router.delete('/recipe/:id', recipeController.deleteRecipe);
-router.get('/recipe/{id}/analyze', recipeController.analyzeRecipe);
+router.get('/recipe/:id/analyze', recipeController.analyzeRecipe);
 
 module.exports = router;
