@@ -85,7 +85,7 @@ export default {
       newIngredient: { id: null, name: '', quantity: 0 },
       showNewIngredientInputs: false,
       duplicateIngredientError: false,
-      generatedtable : {}
+      generatedtable : []
     };   
   },
   async created() {
@@ -112,7 +112,7 @@ export default {
   methods: {
  ////////////////////////Fonction d'analyse des calories
     onAnalyze() {      
-      this.generatedtable = {}
+      this.generatedtable = []
       var result = 0
       var data = this.recipe.ingredients
 
@@ -126,29 +126,32 @@ export default {
           var cal = data[i].quantity * this.ingredients[j].calories
           result = result + cal ;
 
-          var element = {"name": data[i].name, "kcal": cal }
-          Object.assign(this.generatedtable,element);
+          var element = {name: data[i].name, kcal: cal }
+          this.generatedtable.push(element)
+          
         }
       }
       
     }
-   
+    console.log( ) 
     this.totalkcal = result;
     document.getElementById("analyze").hidden = false;
     },
 
     downloadJSON() {
       var data = this.generatedtable
-
+      var titlefile = this.recipe.title + "_rapportJSON.json"
+     
       var fileToSaveJSON = new Blob([JSON.stringify(data)], {
         type: 'application/json'
       });
-      saveAs(fileToSaveJSON, "rapportJSON.json");
+      saveAs(fileToSaveJSON, titlefile);
     },
 
     downloadCSV() {
       var data = this.generatedtable
-      
+      var titlefile = this.recipe.title + "_rapportCSV.csv"
+
       let options = {
         delimiter : 
         {
@@ -158,7 +161,7 @@ export default {
       json2csv(data,options) 
       .then((csv) => {
        var fileToSave = new Blob([csv], {type: 'text/csv;charset=utf-8;'})
-       saveAs(fileToSave, "rapportCSV.csv")})
+       saveAs(fileToSave, titlefile)})
       .catch((err) =>{ console.log(err)})
       
     },
