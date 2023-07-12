@@ -67,11 +67,24 @@ async function addRecipes(req, res) {
     }
 }
 
-async function updateRecipeById(req, res) {
+async function updateRecipe(req, res) {
     try {
-    }
-    catch (err) {
-        console.log(err)
+
+        let { id, ingredients } = req.body;
+        let recipe = await recipeIngredientModel.findAll({ where: { recipeId: id } })
+
+        for (let ingredient of ingredients) {
+            let recipeIngredientFound = recipe.find(recipeIngredient => recipeIngredient.ingredientId === ingredient.id_ingredient);
+            if (recipeIngredientFound && recipeIngredientFound.ingredientId === ingredient.id_ingredient) {
+              recipeIngredientFound.quantity = ingredient.quantity;
+              await recipeIngredientFound.save();
+            }
+          }
+
+        res.status(200).json({ recipe });
+
+    } catch (err) {
+        res.status(500).json({ err, message: "Une erreur s'est produite" });
     }
 }
 
@@ -87,10 +100,11 @@ async function deleteRecipe(req, res) {
 
 async function analyzeRecipe(req, res) {
     try {
+        
     }
     catch (err) {
         console.log(err)
     }
 }
 
-module.exports = { getAllRecipes, getRecipeById, updateRecipeById, deleteRecipe, analyzeRecipe, addRecipes };
+module.exports = { getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, analyzeRecipe, addRecipes };
