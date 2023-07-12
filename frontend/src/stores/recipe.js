@@ -34,7 +34,7 @@ export const useRecipesStore = defineStore("recipes", {
     async updateRecipe(updatedRecipe) {
       try {
         const response = await axios.put(
-          `http://localhost:3000/api/recipe/${updatedRecipe.id}`,
+          `http://localhost:3000/api/recipe`,
           updatedRecipe
         );
         const index = this.recipes.findIndex((recipe) => recipe.id === updatedRecipe.id);

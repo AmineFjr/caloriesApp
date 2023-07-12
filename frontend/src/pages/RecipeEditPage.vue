@@ -108,7 +108,7 @@ export default {
       return ingredient ? ingredient.unit : '';
     },
 
-    saveRecipe() {
+    async saveRecipe() {
       // Check for duplicate ingredient
       const duplicateIngredient = this.recipe.ingredients.find(
         (ingredient) => ingredient.id === this.newIngredient.id
@@ -119,13 +119,7 @@ export default {
         return; // Arrêter l'exécution de la méthode
       }
 
-      // Update the recipe in the recipes array
-      const index = this.recipes.findIndex((recipe) => recipe.id == this.recipe.id);
-      if (index != -1) {
-        this.recipes[index] = this.recipe;
-      }
-
-      // Prepare the JSON format for logging
+      // Convertir les données de la recette au format souhaité
       const recipeData = {
         id: this.recipe.id,
         ingredients: this.recipe.ingredients.map((ingredient) => ({
@@ -135,8 +129,17 @@ export default {
       };
 
       // Log the JSON data
-      // console.log(JSON.stringify(recipeData));
+      console.log(JSON.stringify(recipeData));
+
+      // Utiliser le store pour mettre à jour la recette dans la base de données
+      const recipeStore = useRecipesStore();
+      try {
+        await recipeStore.updateRecipe(recipeData);
+      } catch (error) {
+        console.error("Erreur lors de la sauvegarde de la recette :", error);
+      }
     },
+
 
     addNewIngredient() {
       if (this.selectedIngredientId) {
