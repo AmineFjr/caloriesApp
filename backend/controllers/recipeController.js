@@ -79,10 +79,17 @@ async function updateRecipe(req, res) {
             if (recipeIngredientFound && recipeIngredientFound.ingredientId === ingredient.id_ingredient) {
               recipeIngredientFound.quantity = ingredient.quantity;
               await recipeIngredientFound.save();
+            } else {
+                await recipeIngredientModel.create({
+                    ingredientId: ingredient.id_ingredient,
+                    recipeId: id,
+                    quantity: ingredient.quantity,
+                    step: 1,
+                });
             }
           }
 
-        res.status(200).json({ recipe });
+        res.status(200).json("Recette modifiée");
 
     } catch (err) {
         res.status(500).json({ err, message: "Une erreur s'est produite" });
@@ -125,4 +132,36 @@ async function analyzeRecipe(req, res) {
     }
 }
 
-module.exports = { getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, analyzeRecipe, addRecipes };
+async function addRandomRecipe(req, res) {
+    try {
+        const { userId } = req.body;
+
+        // Création de la recette dans la base de données
+        recipeModel.create({       
+            'title': 'Recette aléatoire',
+            userId
+        }).then(
+            (recipe) => {
+                for (let ingredient of ingredients) {
+                    recipeIngredientModel.create({
+                        ingredientId: ingredient.id,
+                        recipeId: recipe.id,
+                        quantity: ingredient.quantity,
+                        step: ingredient.step || null,
+                    })
+                }
+            }
+        ).then(
+            (response) => {
+                const message = 'Reccette ajoutée';
+                return res.status(201).json({ message });
+            }
+        );
+
+    } catch (err) {
+        console.error('Erreur lors de l\'ajout de la recette :', error);
+        return res.status(500).json({ message: 'Une erreur est survenue lors de l\'ajout de la recette.' });
+    }
+}
+
+module.exports = { getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, analyzeRecipe, addRecipes, addRandomRecipe };
