@@ -12,17 +12,32 @@
 
 ## Table of contents
 
-* [About the project](#markdown-header-about-the-project)
-    * [Contributors](#markdown-header-contributors)
-    * [Description](#markdown-header-description)
-    * [Features](#markdown-header-features)
-    * [Technical architecture](#markdown-header-technical-architecture)
-    * [Environments](#markdown-header-environments)
-* [Getting started](#markdown-header-getting-started)
-    * [Prerequisites](#markdown-header-prerequisites)
-    * [Installation](#markdown-header-installation)
-* [Test](#markdown-header-test)
-* [Frequently asked questions](#markdown-header-frequently-asked-questions)
+- [Calorie App](#calorie-app)
+  - [Table of contents](#table-of-contents)
+  - [About the project](#about-the-project)
+    - [Contributors](#contributors)
+    - [Description](#description)
+    - [Features](#features)
+    - [Technical architecture](#technical-architecture)
+      - [Express](#express)
+      - [Quasar](#quasar)
+    - [Environments](#environments)
+  - [Getting started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+  - [Test](#test)
+  - [Frequently asked questions](#frequently-asked-questions)
+    - [Comment fonctionne les calories](#comment-fonctionne-les-calories)
+  - [Fonctionnalité actuel détaillé](#fonctionnalité-actuel-détaillé)
+    - [Ajout de recette](#ajout-de-recette)
+    - [Analyse d'une recette](#analyse-dune-recette)
+    - [Voir les recettes](#voir-les-recettes)
+    - [Supression des recettes](#supression-des-recettes)
+    - [Modification d'une recette](#modification-dune-recette)
+  - [Comment améliorer le site](#comment-améliorer-le-site)
+    - [Ajout d'un formulaire par rapport a nos besoins calorique](#ajout-dun-formulaire-par-rapport-a-nos-besoins-calorique)
+    - [Ajouter d'autre données que les calories](#ajouter-dautre-données-que-les-calories)
+    - [Ajout d'un backoffice admin](#ajout-dun-backoffice-admin)
 
 
 ---
@@ -143,8 +158,15 @@ $ cd backend
 $ npm install
 ```
 
-* Crée la base de donnée
-* Ajouter le .env
+* Create database
+* Add .env in backend folder
+```TABLE_BDD=""
+USER_BDD=""
+PASSWORD_BDD=""
+PORT="3000"
+SOCKET_APP=""
+PRIVATE_KEY="calorieApp"
+```
 
 * vue/quasar
 ```sh
@@ -178,9 +200,59 @@ $ cd ../frontend
 $ quasar dev
 ```
 
+* start auto http://localhost:8080
+
 
 ## Test
 
 
 ## Frequently asked questions
+
+### Comment fonctionne les calories
+
+- Actuellement chaque ingrédient a dans la base de données les calories qui correspondent à soit 1g / 1cl / 1 pincée de l'ingrédient
+- Si on va sur http://localhost:8080/recipes, on peut apercevoir l'equivalent du nombre de calories * la quantité (calcul fait dans le front)
+
+## Fonctionnalité actuel détaillé
+
+### Ajout de recette
+
+Une personne peut ajouter une recette via un formulaire. Nous sommes passé par un formulaire pour empecher la créeation d'ingrédient par l'utilisateur
+
+### Analyse d'une recette
+
+L'utilisateur peut ajouter ou analyser sa recette, s'il souhaite l'analyser il n'y aura pas de sauvegarde dans la db, cependant il aura la les calories total de sa recette ainsi que la possibilité de récupérer sa recette et toute les données lié sous format json ou csv (fichier csv, les cellules sont séparé par des ;)
+
+### Voir les recettes
+
+Affichage de toutes les recettes avec les calories total par ingrédients ainsi que les calories total de la recette
+
+### Supression des recettes
+
+Possibilité de supprimer une recette existente
+
+### Modification d'une recette
+
+Possibilité d'ajouter un ingrédient a une recette, de supprimer un ingredient ou de modifier la quantité de cette ingrédient. Le bouton reset sur la page d'update d'un ingrédient permet de revenir au données par defaut de la recette tant que les modifications ne sont pas sauvegardé
+
+
+## Comment améliorer le site
+
+### Ajout d'un formulaire par rapport a nos besoins calorique
+
+Chaque personne a un besoin de calories différent en fonction de: 
+- niveau d'activité
+- poids
+- age
+- taille
+- sexe
+- objectif (perte de gras, rester en forme etc...)
+
+### Ajouter d'autre données que les calories 
+
+Ajout de donnée comme les vitamine importantes etc..
+
+### Ajout d'un backoffice admin
+
+Ajout d'un back office pour ajouter des aliments, modifier leur données, modifier le créateur d'une recette/ modifier une recette etc...
 
