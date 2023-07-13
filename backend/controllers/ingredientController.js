@@ -1,26 +1,8 @@
 const ingredientModel = require('../models/ingredientModel');
+const ingredientUtils = require('../utils/ingredients');
 
 async function generateIngredientsData() {
-    let ingredients = [
-        { name: "Farine", unit: "g", calories: 700 },
-        { name: "Sucre", unit: "g", calories: 400 },
-        { name: "Beurre", unit: "g", calories: 350 },
-        { name: "Oeuf", unit: "", calories: 140 },
-        { name: "Lait", unit: "ml", calories: 100 },
-        { name: "Sel", unit: "g", calories: 0 },
-        { name: "Levure", unit: "g", calories: 20 },
-        { name: "Vanille", unit: "cuillère à café", calories: 10 },
-        { name: "Chocolat noir", unit: "g", calories: 550 },
-        { name: "Amandes", unit: "g", calories: 320 },
-        { name: "Miel", unit: "g", calories: 90 },
-        { name: "Levure chimique", unit: "cuillère à café", calories: 5 },
-        { name: "Cannelle", unit: "cuillère à café", calories: 6 },
-        { name: "Noix de coco râpée", unit: "g", calories: 185 },
-        { name: "Miel d'acacia", unit: "g", calories: 120 },
-        { name: "Framboises", unit: "g", calories: 64 },
-        { name: "Écorce d'orange confite", unit: "g", calories: 180 },
-    ];
-
+    let ingredients = ingredientUtils.getAllIngredients();
     ingredients.forEach(async (ingredient) => { await ingredientModel.create({ name: ingredient.name, unit: ingredient.unit, calories: ingredient.calories }) });
     return ingredients;
 }
