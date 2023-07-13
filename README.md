@@ -271,7 +271,7 @@ Response exemple Model
 * Retrieve Recipe 
 
 ```http
-GET api/recipe/:id
+ GET api/recipe/:id
 ````
 
 Response Exemple 
@@ -335,7 +335,7 @@ Response message
 
 * Delete Recipe 
 
-```sh 
+```http 
  DELETE api/recipe/:id_recipe
 ```
 
@@ -354,7 +354,7 @@ Reponse Model
 * Retrieve Ingredients
 
 ```http
-GET api/ingredients
+ GET api/ingredients
 ```
 
 Reponse exemple 
@@ -387,7 +387,7 @@ Reponse exemple
 * Retrien Ingredient 
 
 ```http 
-GET api/ingredient/:id
+ GET api/ingredient/:id
 ```
 Respons Model 
 
@@ -405,7 +405,7 @@ Respons Model
 * Update Ingredient
 
 ```http
-PUT api/ingredient/:id
+ PUT api/ingredient/:id
 ```
 
 *Require auth (token) In request headers*
