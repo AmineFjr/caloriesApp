@@ -27,13 +27,15 @@
   </template>
   
   <script>
+  import { useUserStore } from "../stores/user.js"; // Importez votre store
+
   export default {
     name: "RegisterPage",
     data() {
       return {
         user: {
-          firstname: "",
-          lastname: "",
+          firstName: "",
+          lastName: "",
           email: "",
           password: ""
         },
@@ -42,11 +44,21 @@
       };
     },
     methods: {
-      saveUser(e) {
+      async saveUser(e) {
         e.preventDefault();
         this.submitted = true;
         if (this.user.firstname && this.user.lastname && this.validateEmail(this.user.email) && this.user.password && this.user.password.length >= 6) {
-          console.log(JSON.stringify(this.user));
+          console.log(this.user);
+
+        // Utiliser le store pour mettre à jour la recette dans la base de données
+        const userStore = useUserStore();
+        try {
+        await userStore.createUser(this.user);
+        this.$router.push({ path: "/login" });
+      } catch (error) {
+        console.error("Erreur lors de la sauvegarde de la recette :", error);
+      }
+
         }
       },
       validateEmail(email) {
