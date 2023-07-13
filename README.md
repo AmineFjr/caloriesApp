@@ -19,6 +19,7 @@
     - [Description](#description)
     - [Technical architecture](#technical-architecture)
       - [Express](#express)
+      - [API developpement](#api-developpement)
       - [Quasar](#quasar)
     - [Environments](#environments)
   - [Getting started](#getting-started)
@@ -89,6 +90,8 @@ Explanation of directories and files:
 - **package.json:** This file contains various metadata about your project, including the application's dependencies.
 
 Express.js is very flexible and allows developers to structure their projects as they see fit. Thus, this structure can be modified to suit the needs of your specific project.
+
+#### API developpement
 
 #### Quasar
 
