@@ -74,8 +74,6 @@ export default {
     const newIngredient = ref({ name: "", unit: "", calories: "" });
     const isAddingNew = ref(false);
     const isUpdating = ref(false);
-
-    const userStore = useUserStore();
     
     const columns = [
       { name: 'name', required: true, label: 'Nom', align: 'left', field: 'name', sortable: true },
