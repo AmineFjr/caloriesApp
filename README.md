@@ -46,6 +46,7 @@
     - [Ajouter d'autre données que les calories](#ajouter-dautre-données-que-les-calories)
     - [Ajout d'un backoffice admin (en cours)](#ajout-dun-backoffice-admin-en-cours)
     - [Ajout d'un randomise de recette (en cours)](#ajout-dun-randomise-de-recette-en-cours)
+    - [Collection Postman](#collection-postman)
 
 
 ---
@@ -687,5 +688,5 @@ Ajout d'un back office pour ajouter des aliments, modifier leur données, modifi
 L'api pour créer une recette aléatoire existe, mais le front n'existe pas. Système d'ajout d'aliment aléatoire dans une recette.
 
 ### Collection Postman 
-[Title](../caloriesapp.postman_collection.json)
+[Title](caloriesapp.postman_collection.json)
 
