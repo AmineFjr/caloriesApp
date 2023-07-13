@@ -64,7 +64,7 @@ async function getRecipeById (req, res) {
                 ingredients: recipeWithUser.recipe.ingredients
             }
         })
-        return res.status(200).json(response);
+        return res.status(200).json(response[0]);
     } catch (error) {
         console.error('Erreur lors de la récupération de la recette :', error);
         return res.status(500).json({ message: 'Une erreur est survenue lors de la récupération de la recette.' });
