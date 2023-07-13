@@ -105,12 +105,14 @@ export default {
     async function updateSelectedIngredient() {
       if (!selectedIngredient.value) return;
       try {
-        const updatedIngredient = await store.updateIngredient(selectedIngredient.value, ingredients);
+        const updatedIngredient = await store.updateIngredient(selectedIngredient.value);
         selectedIngredient.value = null;
+        await store.fetchIngredients(); // Mettre à jour le tableau d'ingrédients
       } catch (error) {
         console.error("Erreur lors de la mise à jour de l'ingrédient :", error);
       }
     }
+
 
     onMounted(async () => {
       ingredients.value = await store.fetchIngredients();

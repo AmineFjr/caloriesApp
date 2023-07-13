@@ -39,15 +39,7 @@ export const useIngredientsStore = defineStore("ingredients", {
           `http://localhost:3000/api/ingredient/${updatedIngredient.id}`,
           updatedIngredient
         );
-        console.log('updateIngredient response.data:', response.data); // Pour le debugging
-        const index = ingredients.value.findIndex((ingredient) => ingredient.id === updatedIngredient.id);
-        if (index !== -1) {
-          ingredients.value = [
-            ...ingredients.value.slice(0, index),
-            response.data.updatedIngredient,
-            ...ingredients.value.slice(index + 1)
-          ];
-        }
+        console.log('updateIngredient response.data:', response.data); // Pour le débogage
         return response.data.updatedIngredient;
       } catch (error) {
         console.error("Erreur lors de la mise à jour de l'ingrédient :", error);
