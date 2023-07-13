@@ -2,6 +2,7 @@ const recipeModel = require('../models/recipeModel');
 const recipeIngredientModel = require('../models/recipeIngredientModel');
 const userModel = require ('../models/userModel');
 const  ingredientModel = require ('../models/ingredientModel')
+
 async function getAllRecipes(req, res){
 
     try {
@@ -18,13 +19,13 @@ async function getAllRecipes(req, res){
             if (user) {
                 recipesWithUsers.push({ recipe, user });
             }
-
             for (let ingredient of recipe.ingredients) {
                 totalKcal += ingredient.calories;
             }
         }
         const response = recipesWithUsers.map(recipesWithUser => {
             return {
+                id: recipesWithUser.recipe.id,
                 author: `${recipesWithUser.user.firstName} ${recipesWithUser.user.lastName}`,
                 title: recipesWithUser.recipe.title,
                 date: recipesWithUser.recipe.createdAt,
