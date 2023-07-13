@@ -561,6 +561,17 @@ All components are based on MainLayout who contains a quasar layout and a navbar
  * Node port: 3000
 
 
+### Login/Register 
+
+Le register est 100% fonctionnel
+
+Le login est fonctionnel, en cas d'erreur les redirections ne sont pas faites mais le store d'un jwt, de l'id_user et de son email en cas de succes de connxion sont fonctionnel.
+
+L'implémentation d'une redirection au routeur en cas d'erreur de validité du jwt est a mettre en place, mais la fonction de verification de validé de jwt est fonctionnel.
+
+Une route a été sécurisée afin de démontrer que l'auth est fonctionnelle et que la sécuritée des routes entre front et back est fonctionnel. Pour créé une recette, vous devez etre connecté, sinon vous obtiendrai une erreur. La route est verifié via le header par le token qui est verifié par le backend. Le reste des routes n'ont pas encore été implémenter mais la logique est la meme.
+
+
 ---
 
 ## Getting started
