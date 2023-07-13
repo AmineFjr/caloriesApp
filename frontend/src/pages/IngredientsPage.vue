@@ -39,19 +39,24 @@
         <q-input color="teal-4" filled v-model="newIngredient.calories" label="Calories" />
         <div class="text-center">
           <q-btn color="teal-4" @click="createIngredient">Créer</q-btn>
+          <q-btn flat color="red" @click="cancelNewIngredient">Annuler</q-btn>
         </div>
       </div>
     </div>
 
     <!-- Update Form -->
     <div v-if="selectedIngredient" class="flex flex-center q-pa-md" style="max-width: 500px; margin: auto;">
-      <div style="width: 100%;">
+      <div style="width: 100%;" v-if="isUpdating">
         <q-input color="teal-4" filled v-model="selectedIngredient.name" label="Nom" />
         <q-input color="teal-4" filled v-model="selectedIngredient.unit" label="Unité" />
         <q-input color="teal-4" filled v-model="selectedIngredient.calories" label="Calories" />
         <div class="text-center">
           <q-btn color="teal-4" @click="updateSelectedIngredient">Mettre à jour</q-btn>
+          <q-btn flat color="red" @click="cancelUpdate">Annuler</q-btn>
         </div>
+      </div>
+      <div v-else>
+        <q-btn color="teal-4" @click="isUpdating = !isUpdating">Modifier</q-btn>
       </div>
     </div>
   </div>
@@ -62,16 +67,17 @@ import { ref, onMounted, computed } from "vue";
 import { useIngredientsStore } from "../stores/ingredient.js";
 
 export default {
-  setup () { 
+  setup() {
     const store = useIngredientsStore();
     const ingredients = computed(() => store.ingredients);
     const selectedIngredient = ref(null);
     const newIngredient = ref({ name: "", unit: "", calories: "" });
     const isAddingNew = ref(false);
-    
+    const isUpdating = ref(false);
+
     const columns = [
-      { name: 'name', required: true, label: 'Nom', align: 'left', field: 'name', sortable: true  },
-      { name: 'unit', required: true, label: 'Unité', align: 'left', field: 'unit', sortable: true  },
+      { name: 'name', required: true, label: 'Nom', align: 'left', field: 'name', sortable: true },
+      { name: 'unit', required: true, label: 'Unité', align: 'left', field: 'unit', sortable: true },
       { name: 'calories', required: true, label: 'Calories', align: 'left', field: 'calories', sortable: true },
       { name: 'actions', required: true, label: 'Actions', align: 'left', field: 'id', sortable: false },
     ]
@@ -88,6 +94,12 @@ export default {
     function editRow(row) {
       if (!row || !row.id) return;
       selectedIngredient.value = { ...row };
+      isUpdating.value = true;
+    }
+
+    function cancelUpdate() {
+      selectedIngredient.value = null;
+      isUpdating.value = false;
     }
 
     async function createIngredient() {
@@ -108,16 +120,20 @@ export default {
         const updatedIngredient = await store.updateIngredient(selectedIngredient.value);
         selectedIngredient.value = null;
         await store.fetchIngredients(); // Mettre à jour le tableau d'ingrédients
+        isUpdating.value = false;
       } catch (error) {
         console.error("Erreur lors de la mise à jour de l'ingrédient :", error);
       }
     }
 
+    function cancelNewIngredient() {
+      newIngredient.value = { name: "", unit: "", calories: "" };
+      isAddingNew.value = false;
+    }
 
     onMounted(async () => {
       ingredients.value = await store.fetchIngredients();
     })
-
 
     return {
       filter: ref(''),
@@ -129,7 +145,10 @@ export default {
       createIngredient,
       updateSelectedIngredient,
       isAddingNew,
-      newIngredient
+      newIngredient,
+      cancelNewIngredient,
+      isUpdating,
+      cancelUpdate
     }
   }
 }
