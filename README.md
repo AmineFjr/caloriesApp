@@ -43,7 +43,8 @@
   - [Comment améliorer le site](#comment-améliorer-le-site)
     - [Ajout d'un formulaire par rapport a nos besoins calorique](#ajout-dun-formulaire-par-rapport-a-nos-besoins-calorique)
     - [Ajouter d'autre données que les calories](#ajouter-dautre-données-que-les-calories)
-    - [Ajout d'un backoffice admin](#ajout-dun-backoffice-admin)
+    - [Ajout d'un backoffice admin (en cours)](#ajout-dun-backoffice-admin-en-cours)
+    - [Ajout d'un randomise de recette (en cours)](#ajout-dun-randomise-de-recette-en-cours)
 
 
 ---
@@ -628,7 +629,12 @@ Chaque personne a un besoin de calories différent en fonction de:
 
 Ajout de donnée comme les vitamine importantes etc..
 
-### Ajout d'un backoffice admin
+### Ajout d'un backoffice admin (en cours)
 
 Ajout d'un back office pour ajouter des aliments, modifier leur données, modifier le créateur d'une recette/ modifier une recette etc...
+(en partie fait il y a les ingrédients)
+
+### Ajout d'un randomise de recette (en cours)
+
+L'api pour créer une recette aléatoire existe, mais le front n'existe pas. Système d'ajout d'aliment aléatoire dans une recette.
 
