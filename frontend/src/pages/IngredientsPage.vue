@@ -26,6 +26,23 @@
       </template>
     </q-table>
 
+    <!-- Add New Ingredient Button -->
+    <div class="text-center q-pa-md">
+      <q-btn color="teal-4" @click="isAddingNew = !isAddingNew">Ajouter un nouvel ingrédient</q-btn>
+    </div>
+
+    <!-- New Ingredient Form -->
+    <div v-if="isAddingNew" class="flex flex-center q-pa-md" style="max-width: 500px; margin: auto;">
+      <div style="width: 100%;">
+        <q-input color="teal-4" filled v-model="newIngredient.name" label="Nom" />
+        <q-input color="teal-4" filled v-model="newIngredient.unit" label="Unité" />
+        <q-input color="teal-4" filled v-model="newIngredient.calories" label="Calories" />
+        <div class="text-center">
+          <q-btn color="teal-4" @click="createIngredient">Créer</q-btn>
+        </div>
+      </div>
+    </div>
+
     <!-- Update Form -->
     <div v-if="selectedIngredient" class="flex flex-center q-pa-md" style="max-width: 500px; margin: auto;">
       <div style="width: 100%;">
@@ -49,6 +66,9 @@ export default {
     const store = useIngredientsStore();
     const ingredients = ref([]);
     const selectedIngredient = ref(null);
+    const newIngredient = ref({ name: "", unit: "", calories: "" });
+    const isAddingNew = ref(false);
+    
     const columns = [
       { name: 'name', required: true, label: 'Nom', align: 'left', field: 'name', sortable: true  },
       { name: 'unit', required: true, label: 'Unité', align: 'left', field: 'unit', sortable: true  },
@@ -62,6 +82,13 @@ export default {
 
     function editRow(row) {
       selectedIngredient.value = { ...row };
+    }
+
+    async function createIngredient() {
+      if (!newIngredient.value) return;
+      await store.createIngredient(newIngredient.value);
+      newIngredient.value = { name: "", unit: "", calories: "" };
+      isAddingNew.value = false;
     }
 
     async function updateSelectedIngredient() {
@@ -82,7 +109,10 @@ export default {
       selectedIngredient,
       deleteRow,
       editRow,
+      createIngredient,
       updateSelectedIngredient,
+      isAddingNew,
+      newIngredient
     }
   }
 }
