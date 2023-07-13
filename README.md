@@ -19,8 +19,13 @@
     - [Description](#description)
     - [Technical architecture](#technical-architecture)
       - [Express](#express)
-      - [API developpement](#api-developpement)
+      - [API Reference](#api-reference)
+        - [User](#user)
+        - [Recipe](#recipe)
+        - [Ingredients](#ingredients)
       - [Quasar](#quasar)
+      - [Libray](#libray)
+      - [Logic Components](#logic-components)
     - [Environments](#environments)
   - [Getting started](#getting-started)
     - [Prerequisites](#prerequisites)
@@ -34,6 +39,7 @@
     - [Voir les recettes](#voir-les-recettes)
     - [Supression des recettes](#supression-des-recettes)
     - [Modification d'une recette](#modification-dune-recette)
+    - [CRUD ingredients](#crud-ingredients)
   - [Comment améliorer le site](#comment-améliorer-le-site)
     - [Ajout d'un formulaire par rapport a nos besoins calorique](#ajout-dun-formulaire-par-rapport-a-nos-besoins-calorique)
     - [Ajouter d'autre données que les calories](#ajouter-dautre-données-que-les-calories)
@@ -91,7 +97,346 @@ Explanation of directories and files:
 
 Express.js is very flexible and allows developers to structure their projects as they see fit. Thus, this structure can be modified to suit the needs of your specific project.
 
-#### API developpement
+#### API Reference
+
+```sh
+Host: localhost
+Default Port: 3000
+Url: http://localhost:3000/
+```
+
+##### User 
+
+* SignUp
+
+```http
+  GET api/user/signup
+```
+
+Request exemple Model
+
+```sh 
+{
+    "firstName" : "nalvac",
+    "lastName": "nalvac",
+    "email": "vacna1997@gmail.com",
+    "password": "root"
+
+}
+
+```
+
+Response exemple Model 
+
+```sh 
+{
+    "message": "L'utilisateur nalvac a bien été créé.",
+    "data": {
+        "id": 2,
+        "firstName": "nalvac",
+        "lastName": "nalvac",
+        "email": "vacna1997@gmail.com",
+        "password": "$2b$10$tLXq/DfaHiOr8UGuFVDARuf3NB0NVsVP8HjwEmYrOOMnF4Z2OvDVe",
+        "isAdmin": false,
+        "updatedAt": "2023-07-13T08:59:10.138Z",
+        "createdAt": "2023-07-13T08:59:10.138Z"
+    }
+}
+```
+
+* Login
+
+```http
+  POST api/user/login
+```
+
+Request exemple Model
+
+```sh 
+{
+    "email": "vacna1997@gmail.com",
+    "password": "root"
+}
+
+```
+
+Response exemple Model 
+
+```sh 
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4OTE5NDAyNCwiZXhwIjoxNjg5MjgwNDI0fQ.luzTXIR0CMaeLkOIhS8KHS5oDDdDn7xfP89L6zoDkiA"
+}
+```
+
+* User update 
+
+*Require auth (token) In request headers*
+
+```sh
+headers: {
+    "Content-Type": "application/json",                
+    Authorization: `Bearer ` + token,
+},
+```
+```http
+  PUT api/user/:id_user
+```
+
+Request exemple Model
+
+```sh 
+{
+    "email": "vacna1998@gmail.com",
+}
+```
+
+Response exemple Model 
+
+```sh 
+{
+    "message": "Votre profil a été modifié.",
+    "data": {
+        "firstName": "nalvac",
+        "lastName": "nalvac",
+        "email": "vacna1998@gmail.com",
+        "isAdmin": false,
+        "createdAt": "2023-07-13T08:59:10.000Z",
+        "updatedAt": "2023-07-13T09:12:03.000Z"
+    }
+}
+```
+
+* Delete User
+
+*Require auth (token) In request headers*
+
+```sh
+headers: {
+    "Content-Type": "application/json",                
+    Authorization: `Bearer ` + token,
+},
+```
+```http
+  DELETE /api/user/:id_user
+```
+
+Response exemple Model 
+
+```sh 
+{
+    
+  "message": "L'utilisateur supprimé avec succès"
+
+}
+```
+
+##### Recipe
+
+* Retrieve recipes
+
+```http
+  GET api/user/recipes
+```
+
+Response exemple Model 
+
+```sh 
+[
+  {
+      "id": 1,
+      "author": "nalvac nalvac",
+      "title": "Poulette",
+      "date": "2023-07-13T11:04:27.000Z",
+      "ingredients": [
+          {
+              "id": 8,
+              "name": "Amandes",
+              "unit": "g",
+              "calories": 320,
+              "recipe_ingredient": {
+                  "quantity": 200,
+                  "step": "Fais comme tu veux",
+                  "createdAt": "2023-07-13T11:06:08.000Z",
+                  "updatedAt": "2023-07-13T11:06:09.000Z",
+                  "recipeId": 1,
+                  "ingredientId": 8
+              }
+          }
+      ],
+      "totalKcal": 64000
+  }
+]
+```
+
+* Retrieve Recipe 
+
+```http
+GET api/recipe/:id
+````
+
+Response Exemple 
+
+```sh
+{
+      "id": 1,
+      "author": "nalvac nalvac",
+      "title": "Poulette",
+      "date": "2023-07-13T11:04:27.000Z",
+      "ingredients": [
+          {
+              "id": 8,
+              "name": "Amandes",
+              "unit": "g",
+              "calories": 320,
+              "recipe_ingredient": {
+                  "quantity": 200,
+                  "step": "Fais comme tu veux",
+                  "createdAt": "2023-07-13T11:06:08.000Z",
+                  "updatedAt": "2023-07-13T11:06:09.000Z",
+                  "recipeId": 1,
+                  "ingredientId": 8
+              }
+          }
+      ],
+      "totalKcal": 64000
+  }
+```
+
+* Update Recipe
+
+```http
+  PUT api/user/recipe/
+```
+*Require auth (token) In request headers*
+
+```sh
+headers: {
+    "Content-Type": "application/json",                
+    Authorization: `Bearer ` + token,
+},
+```
+
+Request exemple Model
+
+```sh 
+{
+    "id": 4,
+    "ingredients": [
+       {  "id_ingredient": 3, "quantity": 500 },
+    {  "id_ingredient": 5, "quantity": 800 }
+    ]
+}
+```
+Response message
+
+```sh
+"Recette Modifiée"
+```
+
+* Delete Recipe 
+
+```sh 
+ DELETE api/recipe/:id_recipe
+```
+
+Reponse Model 
+
+```sh
+{
+    "error": false,
+    "message": "DELETED"
+}
+```
+
+##### Ingredients
+
+
+* Retrieve Ingredients
+
+```http
+GET api/ingredients
+```
+
+Reponse exemple 
+
+```sh
+{
+    "ingredients": [
+        {
+            "id": 1,
+            "name": "Farine",
+            "unit": "g",
+            "calories": 700
+        },
+        {
+            "id": 2,
+            "name": "Sucre",
+            "unit": "g",
+            "calories": 400
+        },
+        {
+            "id": 3,
+            "name": "Beurre",
+            "unit": "g",
+            "calories": 350
+        },
+      
+    ]
+}
+```
+* Retrien Ingredient 
+
+```http 
+GET api/ingredient/:id
+```
+Respons Model 
+
+```sh
+{
+    "ingredient": {
+        "id": 2,
+        "name": "Sucre",
+        "unit": "g",
+        "calories": 400
+    }
+}
+```
+
+* Update Ingredient
+
+```http
+PUT api/ingredient/:id
+```
+
+*Require auth (token) In request headers*
+
+```sh
+headers: {
+    "Content-Type": "application/json",                
+    Authorization: `Bearer ` + token,
+},
+```
+
+Request model 
+
+```sh
+{
+  "name" : "Farien de qualité"
+}
+```
+
+Response exemple model
+
+```sh
+{
+    "ingredient": {
+        "id": 1,
+        "name": "Farien de qualité",
+        "unit": "g",
+        "calories": 700
+    }
+}
+```
 
 #### Quasar
 
@@ -257,6 +602,14 @@ Possibilité de supprimer une recette existente
 ### Modification d'une recette
 
 Possibilité d'ajouter un ingrédient a une recette, de supprimer un ingredient ou de modifier la quantité de cette ingrédient. Le bouton reset sur la page d'update d'un ingrédient permet de revenir au données par defaut de la recette tant que les modifications ne sont pas sauvegardé
+
+### CRUD ingredients
+
+Possibilité 
+- D'ajout
+- d'update
+- Add
+Un ingrédient
 
 
 ## Comment améliorer le site
