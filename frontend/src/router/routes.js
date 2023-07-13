@@ -5,13 +5,25 @@ const routes = [
     children: [
       { path: "", component: () => import("src/pages/HomePage.vue") },
       {
+        path: "ingredients",
+        component: () => import("src/pages/IngredientsPage.vue"),
+      },
+      {
         path: "recipes",
         component: () => import("src/pages/RecipesPage.vue"),
       },
       {
-        path: "ingrediants",
-        component: () => import("src/pages/IngredientsPage.vue"),
+        path: "recipe_edit/:id",
+        component: () => import("src/pages/RecipeEditPage.vue"),
       },
+      {
+        path: "login",
+        component: () => import("src/pages/LoginPage.vue"),
+      },
+      {
+        path: "register",
+        component: () => import("src/pages/RegisterPage.vue"),
+      }
     ],
   },
 
