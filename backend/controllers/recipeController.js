@@ -12,16 +12,13 @@ async function getAllRecipes(req, res){
 
         const recipesWithUsers = [];
 
-        let totalKcal = 0;
-
         for (let recipe of recipes) {
+            let totalKcal = 0;
             const user = await userModel.findByPk(recipe.userId);
-            if (user) {
-                recipesWithUsers.push({ recipe, user });
-            }
             for (let ingredient of recipe.ingredients) {
-                totalKcal += ingredient.calories;
+                totalKcal += ingredient.calories * ingredient.recipe_ingredient.quantity;
             }
+            if (user) recipesWithUsers.push({ recipe, user, totalKcal });
         }
         const response = recipesWithUsers.map(recipesWithUser => {
             return {
@@ -30,10 +27,9 @@ async function getAllRecipes(req, res){
                 title: recipesWithUser.recipe.title,
                 date: recipesWithUser.recipe.createdAt,
                 ingredients: recipesWithUser.recipe.ingredients,
-                totalKcal
+                totalKcal: recipesWithUser.totalKcal
             }
         })
-
         return res.status(200).json(response);
     } catch (error) {
         const message = 'Une erreur est survenue lors de la recherche des ingrédients';
@@ -45,7 +41,7 @@ async function getAllRecipes(req, res){
 async function getRecipeById (req, res) {
     try {
         // Recherche de la recette par son identifiant
-        const recipe = await recipeModel.findByPk(req.params.id, {
+        let recipe = await recipeModel.findByPk(req.params.id, {
             include: 'ingredients' // Inclure les ingrédients liés à la recette
         });
 
@@ -53,7 +49,22 @@ async function getRecipeById (req, res) {
             return res.status(404).json({ message: 'Recette introuvable.' });
         }
 
-        return res.status(200).json(recipe);
+        let user = await userModel.findByPk(recipe.userId);
+
+        let recipeWithUser = [];
+        recipeWithUser.push({ recipe, user });
+
+        const response = recipeWithUser.map(recipeWithUser => {
+            return {
+                id: recipeWithUser.recipe.id,
+                author: `${recipeWithUser.user.firstName} ${recipeWithUser.user.lastName}`,
+                title: recipeWithUser.recipe.title,
+                createdAt: recipeWithUser.recipe.createdAt,
+                updatedAt: recipeWithUser.recipe.updatedAt,
+                ingredients: recipeWithUser.recipe.ingredients
+            }
+        })
+        return res.status(200).json(response[0]);
     } catch (error) {
         console.error('Erreur lors de la récupération de la recette :', error);
         return res.status(500).json({ message: 'Une erreur est survenue lors de la récupération de la recette.' });
