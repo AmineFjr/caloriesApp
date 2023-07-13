@@ -1,6 +1,6 @@
 <template>
   <q-page class="row justify-center q-pt-lg">
-    <q-form class="q-gutter-md" style="width: 60%;" @submit="saveRecipe">
+    <q-form class="q-gutter-md col-xs-12 col-sm-10 col-md-8 col-lg-6 col-xl-4" @submit="saveRecipe">
       <q-input filled v-model="recipe.title" label="Titre" readonly/>
       <q-input filled v-model="recipe.author" label="Auteur" readonly/>
       <q-input filled v-model="recipe.date" label="Date" readonly />
@@ -8,15 +8,14 @@
       <div class="q-mt-md" v-for="(ingredient, index) in recipe.ingredients" :key="index">
         <div class="q-gutter-sm row items-start">
           <q-input type="hidden" v-model="ingredient.id" />
-          <q-input filled v-model="ingredient.name" label="Ingrédient" style="width: 30%;" readonly />
-          <q-input color="teal-4" filled v-model.number="ingredient.quantity" :label="`Quantité (${ingredient.unit})`" style="width: 30%;" />
-
+          <q-input filled v-model="ingredient.name" label="Ingrédient" class="col-xs-12 col-sm-6 col-md-4" readonly />
+          <q-input color="teal-4" filled v-model.number="ingredient.quantity" :label="`Quantité (${ingredient.unit})`" class="col-xs-12 col-sm-6 col-md-4" />
           <q-btn round color="teal-6" icon="delete" @click="removeIngredient(index)" />
         </div>
       </div>
 
       <div class="q-gutter-sm row items-start">
-        <q-select color="teal-4" filled v-model="selectedIngredientId" :options="ingredients" option-value="id" option-label="name" label="Nouvel Ingrédient" style="width: 30%;" />
+        <q-select color="teal-4" filled v-model="selectedIngredientId" :options="ingredients" option-value="id" option-label="name" label="Nouvel Ingrédient" class="col-xs-12 col-sm-6 col-md-4" />
         <q-btn class="q-ml-sm" round color="teal-6" icon="add" @click="addNewIngredient" />
       </div>
 
@@ -28,7 +27,7 @@
         </div>  
       </div>
 
-      <q-btn class="q-mt-md" type="submit" color="teal-6" label="Sauvegarder" />
+      <q-btn class="q-mt-md" type="submit" color="teal-6" label="Sauvegarder"/>
       <q-btn class="q-mt-md" flat color="red" label="Réinitialiser" @click="reloadRecipe" />
       
       <p v-if="duplicateIngredientError" style="color: red;">Cet ingrédient est déjà dans la recette.</p>
