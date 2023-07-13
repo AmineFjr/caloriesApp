@@ -353,6 +353,50 @@ Reponse Model
 }
 ```
 
+* Random Recipe 
+
+```http 
+ POST api/recipe/random
+```
+Request Model
+
+```sh 
+{
+    "userId": 1
+}
+```
+
+Reponse Model 
+
+```sh
+{
+    "id": 91,
+    "author": "Test test",
+    "title": "Recette aléatoire uniqId: id3fd2477d31932",
+    "createdAt": "2023-07-13T13:17:29.000Z",
+    "updatedAt": "2023-07-13T13:17:29.000Z",
+    "recipe_ingredients": [
+        {
+            "quantity": 25,
+            "step": "1",
+            "createdAt": "2023-07-13T13:17:29.000Z",
+            "updatedAt": "2023-07-13T13:17:29.000Z",
+            "recipeId": 91,
+            "ingredientId": 22
+        }
+    ],
+    "ingredients": [
+        {
+            "id": 22,
+            "name": "Sel",
+            "unit": "g",
+            "calories": 0
+        }
+    ],
+    "totalKcal": 0
+}
+```
+
 ##### Ingredients
 
 
