@@ -55,9 +55,7 @@ import { json2csv } from 'json-2-csv';
 
 import { useRecipesStore } from "../stores/recipe.js"; // Importez votre store
 import { useIngredientsStore } from "../stores/ingredient.js"; // Importez votre store pour les ingrédients
-
-// import CardComponents from "../components/CardComponents.vue";
-
+import { useUserStore } from "../stores/user.js"; // Importez votre store
 
 export default {
   name: "HomePage",
@@ -66,9 +64,11 @@ export default {
     const $q = useQuasar();
     var text = ref("");
     var totalkcal = ref(0);
+    let token
     return {
       text,
       totalkcal,  
+      token
     };
   },
   data() {
@@ -91,7 +91,9 @@ export default {
   async created() {
     this.recipe = this.recipe
     const ingredientStore = useIngredientsStore();
-    this.recipe.author = 1
+    const userStore = useUserStore();
+    this.recipe.author = userStore.currentuser[1]["userId"]
+    this.token = userStore.currentuser[0]["token"]
 
     try {
       const result = await ingredientStore.fetchIngredients();
@@ -116,7 +118,6 @@ export default {
       var result = 0
       var data = this.recipe.ingredients
 
-    
     for(var i in data)
     {
       for(var j in this.ingredients)
@@ -210,12 +211,11 @@ export default {
 
       // Utiliser le store pour mettre à jour la recette dans la base de données
       const recipeStore = useRecipesStore();
-      try {
-        await recipeStore.createRecipe(recipeData);
-        this.$router.push({ path: "/recipes" });
-      } catch (error) {
-        console.error("Erreur lors de la sauvegarde de la recette :", error);
-      }
+
+      const req = await recipeStore.createRecipe(recipeData, this.token)
+      .then((res =>   this.$router.push({ path: "/recipes" })))
+      .catch((error) =>   console.error("Erreur lors de la sauvegarde de la recette :", error))
+  
       
     },
       

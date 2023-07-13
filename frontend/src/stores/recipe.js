@@ -1,27 +1,37 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
+
 export const useRecipesStore = defineStore("recipes", {
   state: () => ({
     recipes: [],
   }),
   actions: {
     // Créer une recette
-    async createRecipe(newRecipe) {
+    async createRecipe(newRecipe, token) {
+    
       try {
         const response = await axios.post(
           "http://localhost:3000/api/recipe",
-          newRecipe
+          newRecipe,
+          {
+            headers: {
+              "Content-Type": "application/json",                
+              Authorization: `Bearer ` + token,
+            },
+          }
         );
         this.recipes.push(response.data);
       } catch (error) {
         console.error("Erreur lors de la création de la recette :", error);
       }
     },
+    
     // Lire toutes les recettes
     async fetchRecipes() {
         try {
-          const response = await axios.get("http://localhost:3000/api/recipes");
+          const response = await axios.get("http://localhost:3000/api/recipes"
+          );
           console.log(response.data); // log the fetched recipes
           this.recipes = response.data;
           return this.recipes; // You should return the data
@@ -35,7 +45,7 @@ export const useRecipesStore = defineStore("recipes", {
       try {
         const response = await axios.put(
           `http://localhost:3000/api/recipe`,
-          updatedRecipe
+          updatedRecipe,
         );
         const index = this.recipes.findIndex((recipe) => recipe.id === updatedRecipe.id);
         if (index !== -1) {
