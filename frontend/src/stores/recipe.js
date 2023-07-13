@@ -28,14 +28,10 @@ export const useRecipesStore = defineStore("recipes", {
     },
     
     // Lire toutes les recettes
-    async fetchRecipes(token) {
+    async fetchRecipes() {
         try {
-          const response = await axios.get("http://localhost:3000/api/recipes",  {
-            headers: {
-              "Content-Type": "application/json",                
-              Authorization: `Bearer ` + token,
-            },
-          });
+          const response = await axios.get("http://localhost:3000/api/recipes"
+          );
           console.log(response.data); // log the fetched recipes
           this.recipes = response.data;
           return this.recipes; // You should return the data
@@ -45,17 +41,11 @@ export const useRecipesStore = defineStore("recipes", {
       },
       
     // Mettre à jour une recette
-    async updateRecipe(updatedRecipe, token) {
+    async updateRecipe(updatedRecipe) {
       try {
         const response = await axios.put(
           `http://localhost:3000/api/recipe`,
           updatedRecipe,
-          {
-            headers: {
-              "Content-Type": "application/json",                
-              Authorization: `Bearer ` + token,
-            },
-          }
         );
         const index = this.recipes.findIndex((recipe) => recipe.id === updatedRecipe.id);
         if (index !== -1) {
@@ -66,15 +56,9 @@ export const useRecipesStore = defineStore("recipes", {
       }
     },
     // Supprimer une recette
-    async deleteRecipe(recipeId, token) {
+    async deleteRecipe(recipeId) {
       try {
-        await axios.delete(`http://localhost:3000/api/recipe/${recipeId}`, 
-        {
-          headers: {
-            "Content-Type": "application/json",                
-            Authorization: `Bearer ` + token,
-          },
-        });
+        await axios.delete(`http://localhost:3000/api/recipe/${recipeId}`);
         const index = this.recipes.findIndex((recipe) => recipe.id === recipeId);
         if (index !== -1) {
           this.recipes.splice(index, 1);
@@ -84,7 +68,7 @@ export const useRecipesStore = defineStore("recipes", {
       }
     },
     // Récupérer une recette par ID
-    async fetchRecipeById(id, token) {
+    async fetchRecipeById(id) {
       try {
         const response = await axios.get(`http://localhost:3000/api/recipe/${id}`);
         return response.data;
