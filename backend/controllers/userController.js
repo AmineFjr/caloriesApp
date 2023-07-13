@@ -97,7 +97,15 @@ exports.updateUser = (req, res) => {
             })
                 .then((post) => {
                     const message = "Votre profil a été modifié.";
-                    return res.status(201).json({message, data: user});
+                    const response =  {
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email,
+                        isAdmin: user.isAdmin,
+                        createdAt: user.createdAt,
+                        updatedAt: user.updatedAt,
+                    }
+                    return res.status(201).json({message, data: response});
                 })
                 .catch((error) => {
                     if (error instanceof ValidationError) {
