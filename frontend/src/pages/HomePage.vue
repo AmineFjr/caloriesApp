@@ -95,7 +95,7 @@ export default {
 
     try {
       const result = await ingredientStore.fetchIngredients();
-      this.ingredients = result.ingredients;
+      this.ingredients = result;
     } catch (error) {
       console.error("Error fetching ingredients: ", error);
     }
