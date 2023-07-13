@@ -20,10 +20,23 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
+          <q-btn flat round dense color="teal-4" icon="edit" @click="editRow(props.row)" />
           <q-btn flat round dense color="teal-4" icon="delete" @click="deleteRow(props.row)" />
         </q-td>
       </template>
     </q-table>
+
+    <!-- Update Form -->
+    <div v-if="selectedIngredient" class="flex flex-center q-pa-md" style="max-width: 500px; margin: auto;">
+      <div style="width: 100%;">
+        <q-input color="teal-4" filled v-model="selectedIngredient.name" label="Nom" />
+        <q-input color="teal-4" filled v-model="selectedIngredient.unit" label="Unité" />
+        <q-input color="teal-4" filled v-model="selectedIngredient.calories" label="Calories" />
+        <div class="text-center">
+          <q-btn color="teal-4" @click="updateSelectedIngredient">Mettre à jour</q-btn>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -35,6 +48,7 @@ export default {
   setup () { 
     const store = useIngredientsStore();
     const ingredients = ref([]);
+    const selectedIngredient = ref(null);
     const columns = [
       { name: 'name', required: true, label: 'Nom', align: 'left', field: 'name', sortable: true  },
       { name: 'unit', required: true, label: 'Unité', align: 'left', field: 'unit', sortable: true  },
@@ -46,6 +60,16 @@ export default {
       store.deleteIngredient(row.id);
     }
 
+    function editRow(row) {
+      selectedIngredient.value = { ...row };
+    }
+
+    async function updateSelectedIngredient() {
+      if (!selectedIngredient.value) return;
+      await store.updateIngredient(selectedIngredient.value);
+      selectedIngredient.value = null;
+    }
+
     onMounted(async() => {
       const result = await store.fetchIngredients();
       ingredients.value = result.ingredients;
@@ -55,7 +79,10 @@ export default {
       filter: ref(''),
       columns,
       ingredients,
+      selectedIngredient,
       deleteRow,
+      editRow,
+      updateSelectedIngredient,
     }
   }
 }

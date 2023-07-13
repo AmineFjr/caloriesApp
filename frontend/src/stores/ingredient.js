@@ -38,7 +38,12 @@ export const useIngredientsStore = defineStore("ingredients", {
         );
         const index = this.ingredients.findIndex((ingredient) => ingredient.id === updatedIngredient.id);
         if (index !== -1) {
-          this.ingredients.splice(index, 1, response.data);
+          // Create a new copy of the array and replace the updated ingredient
+          this.ingredients = [
+            ...this.ingredients.slice(0, index),
+            response.data,
+            ...this.ingredients.slice(index + 1)
+          ];
         }
       } catch (error) {
         console.error("Erreur lors de la mise à jour de l'ingrédient :", error);
@@ -50,12 +55,16 @@ export const useIngredientsStore = defineStore("ingredients", {
         await axios.delete(`http://localhost:3000/api/ingredient/${ingredientId}`);
         const index = this.ingredients.findIndex((ingredient) => ingredient.id === ingredientId);
         if (index !== -1) {
-          this.ingredients.splice(index, 1);
+          // Create a new copy of the array without the deleted ingredient
+          this.ingredients = [
+            ...this.ingredients.slice(0, index),
+            ...this.ingredients.slice(index + 1)
+          ];
         }
       } catch (error) {
         console.error("Erreur lors de la suppression de l'ingrédient :", error);
       }
-    },
+    },    
     // Récupérer un ingrédient par ID
     async fetchIngredientById(id) {
       try {
