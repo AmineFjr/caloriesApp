@@ -10,9 +10,12 @@
 
 ---
 
+## Attention il faut lire login/register pour utiliser l'application c'est important 
+
 ## Table of contents
 
 - [Calorie App](#calorie-app)
+  - [Attention il faut lire login/register pour utiliser l'application c'est important](#attention-il-faut-lire-loginregister-pour-utiliser-lapplication-cest-important)
   - [Table of contents](#table-of-contents)
   - [About the project](#about-the-project)
     - [Contributors](#contributors)
@@ -28,6 +31,7 @@
       - [Libray](#libray)
       - [Logic Components](#logic-components)
     - [Environments](#environments)
+    - [Login/Register](#loginregister)
   - [Getting started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
@@ -571,6 +575,8 @@ L'implémentation d'une redirection au routeur en cas d'erreur de validité du j
 
 Une route a été sécurisée afin de démontrer que l'auth est fonctionnelle et que la sécuritée des routes entre front et back est fonctionnel. Pour créé une recette, vous devez etre connecté, sinon vous obtiendrai une erreur. La route est verifié via le header par le token qui est verifié par le backend. Le reste des routes n'ont pas encore été implémenter mais la logique est la meme.
 
+
+**Actuellement, on ne voit pas la liste des ingrédients dans la création de recettes (page d'accueil) tant qu'on est pas connecté, donc on ne peut pas créer de recette sans être connecté, pour tout ce qui est liée au recette on doit se connecter** 
 
 ---
 
