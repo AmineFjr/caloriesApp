@@ -34,6 +34,8 @@ async function getRandomRecipeInformationById(id) {
 
     recipeWithUser.push({ recipe, user });
 
+    
+
     const response = recipeWithUser.map(recipeWithUser => {
         return {
             id: recipeWithUser.recipe.id,
@@ -42,6 +44,7 @@ async function getRandomRecipeInformationById(id) {
             createdAt: recipeWithUser.recipe.createdAt,
             updatedAt: recipeWithUser.recipe.updatedAt,
             recipe_ingredients : recipeIngredient,
+            ingredients: ingredients,
             totalKcal: totalOfCalories
         }   
     })
