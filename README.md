@@ -124,7 +124,38 @@ Explanation of directories and files:
 - **router/:** This directory contains the Vue.js router, which handles navigation between pages.
 - **quasar.conf.js:** This is the Quasar configuration file. It defines a variety of settings for your Quasar application.
 - **package.json:** This file contains various metadata about your project, including the application's dependencies.
- 
+
+#### Libray 
+
+We use some library to increase developpement speed, the stability and the maintenability of the project.
+
+- **store:** Piana is a state management library for Vue.js projects that helps you manage and share application state across components. It provides a centralized store for your application's data, allowing you to easily access and modify the state from different parts of application. We use that linked to axios to communicate with api and store data.
+	
+-  **fetching:** Axios is a popular JavaScript library used for making HTTP requests from the browser or Node.js. 
+	It provides an easy-to-use API for handling asynchronous operations and is commonly used in Vue.js projects for data fetching and interacting with APIs. 
+
+- **saving file:**	File-saver.js is a JavaScript library that helps you save files on the client-side. It provides an easy-to-use API for creating and downloading files in the browser.
+
+- **conversion:**	json2csv is a JavaScript library that allows you to convert JSON data to CSV (Comma-Separated Values) format. It is commonly used in Vue.js projects when you need to export JSON data as a CSV file.
+
+#### Logic Components
+
+All components are based on MainLayout who contains a quasar layout and a navbar
+
+  Page : 
+  - Error404 : Returned by router in case of not listed requested URL
+  - HomePage : Page with form to add reciepe, to analyse calories, and to download a report 
+  - RecipeEditPage : Page were you can update reciepe
+  - RecipesPage : Page who display all recipes, can delete reciepe, and access to update page 
+  - RegisterPage : Can create user 
+  - LoginPage : Log user and secure it  
+
+  Stores : 
+  Logic to store, process data and communicate with api.
+  - token : store the auth token to securise connection 
+  - user / ingrediant / reciepe : can make communication with api and make data reflection 
+
+
 ### Environments
 
  * URL: localhost

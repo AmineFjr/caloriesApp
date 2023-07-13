@@ -16,7 +16,8 @@
             label="Les recettes"
           />
           <q-space />
-          <q-btn color="teal-6" icon="person" class="q-ml-auto q-btn-no-padding">
+
+          <q-btn color="teal-6" icon="person" class="q-ml-auto q-btn-no-padding q-mr-md">
             <q-menu>
               <q-list style="min-width: 120px">
                 <q-item clickable v-close-popup to="/login">
@@ -28,6 +29,17 @@
               </q-list>
             </q-menu>
           </q-btn>
+
+          <q-btn color="teal-6" icon="settings" class="q-ml-auto q-btn-no-padding">
+            <q-menu>
+              <q-list style="min-width: 120px">
+                <q-item clickable v-close-popup to="/ingredients">
+                  <q-item-section>Ingrédients</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+          
         </q-toolbar>
       </q-header>
 
