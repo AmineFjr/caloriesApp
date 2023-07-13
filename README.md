@@ -17,6 +17,7 @@
   - [About the project](#about-the-project)
     - [Contributors](#contributors)
     - [Description](#description)
+    - [Database modelisation](#database-modelisation)
     - [Technical architecture](#technical-architecture)
       - [Express](#express)
       - [API Reference](#api-reference)
@@ -68,6 +69,9 @@ With our API, you can enter the details of your recipe, such as the list of ingr
 
 CalorieApp was created with the goal of making calorie tracking easier and more convenient for everyone. Whether you are a chef, a nutritionist, a fitness app developer, or just someone who loves to cook at home, this API is designed to help you make informed decisions about food.
 
+### Database modelisation
+
+![BDD](img/bdd.png)
 
 ### Technical architecture
 
