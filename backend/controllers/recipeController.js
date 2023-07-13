@@ -1,25 +1,48 @@
 const recipeModel = require('../models/recipeModel');
 const recipeIngredientModel = require('../models/recipeIngredientModel');
-const ingredientModel = require('../models/ingredientModel');
+const userModel = require ('../models/userModel');
+const  ingredientModel = require ('../models/ingredientModel')
+async function getAllRecipes(req, res){
 
-async function getAllRecipes(req, res) {
-    recipeModel.findAll({
-        include: 'ingredients' // Inclure les ingrédients liés à la recette
-    }).then(
-        (recipe) => {
-            return res.status(200).json(recipe);
+    try {
+        const recipes = await recipeModel.findAll({
+            include: 'ingredients', // Inclure les ingrédients liés à la recette
+        });
+
+        const recipesWithUsers = [];
+
+        let totalKcal = 0;
+
+        for (let recipe of recipes) {
+            const user = await userModel.findByPk(recipe.userId);
+            if (user) {
+                recipesWithUsers.push({ recipe, user });
+            }
+
+            for (let ingredient of recipe.ingredients) {
+                totalKcal += ingredient.calories;
+            }
         }
-    ).catch(error => {
+        const response = recipesWithUsers.map(recipesWithUser => {
+            return {
+                author: `${recipesWithUser.user.firstName} ${recipesWithUser.user.lastName}`,
+                title: recipesWithUser.recipe.title,
+                date: recipesWithUser.recipe.createdAt,
+                ingredients: recipesWithUser.recipe.ingredients,
+                totalKcal
+            }
+        })
+
+        return res.status(200).json(response);
+    } catch (error) {
         const message = 'Une erreur est survenue lors de la recherche des ingrédients';
-        return res.status(404).json({ message, error })
-    })
+        return res.status(404).json({message, error})
+    }
 }
 
 // Contrôleur pour récupérer une recette par son identifiant
-async function getRecipeById(req, res) {
+async function getRecipeById (req, res) {
     try {
-        const { recipeId } = req.params.id;
-
         // Recherche de la recette par son identifiant
         const recipe = await recipeModel.findByPk(req.params.id, {
             include: 'ingredients' // Inclure les ingrédients liés à la recette
