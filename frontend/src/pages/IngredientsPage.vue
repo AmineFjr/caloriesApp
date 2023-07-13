@@ -58,13 +58,13 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useIngredientsStore } from "../stores/ingredient.js";
 
 export default {
   setup () { 
     const store = useIngredientsStore();
-    const ingredients = ref([]);
+    const ingredients = computed(() => store.ingredients);
     const selectedIngredient = ref(null);
     const newIngredient = ref({ name: "", unit: "", calories: "" });
     const isAddingNew = ref(false);
@@ -77,30 +77,45 @@ export default {
     ]
 
     async function deleteRow(row) {
-      store.deleteIngredient(row.id);
+      try {
+        const updatedIngredients = await store.deleteIngredient(row.id);
+        ingredients.value = updatedIngredients; // Here we update the ingredients array
+      } catch (error) {
+        console.error("Erreur lors de la suppression de l'ingrédient :", error);
+      }
     }
 
     function editRow(row) {
+      if (!row || !row.id) return;
       selectedIngredient.value = { ...row };
     }
 
     async function createIngredient() {
       if (!newIngredient.value) return;
-      await store.createIngredient(newIngredient.value);
-      newIngredient.value = { name: "", unit: "", calories: "" };
-      isAddingNew.value = false;
+      try {
+        const updatedIngredients = await store.createIngredient(newIngredient.value);
+        ingredients.value = updatedIngredients; // Here we update the ingredients array
+        newIngredient.value = { name: "", unit: "", calories: "" };
+        isAddingNew.value = false;
+      } catch (error) {
+        console.error("Erreur lors de la création de l'ingrédient :", error);
+      }
     }
 
     async function updateSelectedIngredient() {
       if (!selectedIngredient.value) return;
-      await store.updateIngredient(selectedIngredient.value);
-      selectedIngredient.value = null;
+      try {
+        const updatedIngredient = await store.updateIngredient(selectedIngredient.value, ingredients);
+        selectedIngredient.value = null;
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour de l'ingrédient :", error);
+      }
     }
 
-    onMounted(async() => {
-      const result = await store.fetchIngredients();
-      ingredients.value = result.ingredients;
+    onMounted(async () => {
+      ingredients.value = await store.fetchIngredients();
     })
+
 
     return {
       filter: ref(''),
