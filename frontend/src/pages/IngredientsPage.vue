@@ -75,6 +75,8 @@ export default {
     const isAddingNew = ref(false);
     const isUpdating = ref(false);
 
+    const userStore = useUserStore();
+    
     const columns = [
       { name: 'name', required: true, label: 'Nom', align: 'left', field: 'name', sortable: true },
       { name: 'unit', required: true, label: 'Unité', align: 'left', field: 'unit', sortable: true },

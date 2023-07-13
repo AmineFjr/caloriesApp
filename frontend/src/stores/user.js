@@ -4,6 +4,9 @@ import axios from "axios";
 export const useUserStore = defineStore("user", {
   state: () => ({
     users: [],
+    currentuser : [
+      
+    ]
   }),
   actions: {
     // Créer un user
@@ -11,7 +14,7 @@ export const useUserStore = defineStore("user", {
       try {
         const response = await axios.post(
           "http://localhost:3000/api/user/signup",
-          newUser
+          newUser,
         );
         this.users.push(response.data);
       } catch (error) {
@@ -19,19 +22,20 @@ export const useUserStore = defineStore("user", {
       }
     },
 
-    // Logger un user EN COURS
-    async logUser(newUser) {
+    async loginUser(loginUser) {
         try {
           const response = await axios.post(
             "http://localhost:3000/api/user/login",
-            newUser
+            loginUser
           );
-          this.users.push(response.data);
+          this.currentuser = [] ; 
+          this.currentuser.push({token : response.data.token});
+          this.currentuser.push({userId :  response.data.userId});
+          this.currentuser.push({email : loginUser.email});
+          // this.users.push(response.data);
         } catch (error) {
           console.error("Erreur lors de la création de l'user :", error);
         }
       },
-
-
   },
 });
