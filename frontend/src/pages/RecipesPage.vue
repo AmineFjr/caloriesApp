@@ -3,18 +3,18 @@
     <q-card v-for="recipe in recipes" :key="recipe.id" class="my-card bg-teal-4 text-white">
       <q-card-section>
         <div class="text-h6">{{ recipe.title }}</div>
-        <div class="text-subtitle2">par {{ recipe.userId }} - {{ formatDate(recipe.createdAt) }}</div>
+        <div class="text-subtitle2">par {{ recipe.author }} - {{ formatDate(recipe.date) }}</div>
       </q-card-section>
       <q-separator dark />
       <q-card-section>
         <ul>
           <li v-for="(ingredient, index) in recipe.ingredients" :key="index">
-            {{ ingredient.name }} - {{ ingredient.recipe_ingredient.quantity }}{{ ingredient.unit }} - {{ ingredient.calories }} cal
+            {{ ingredient.name }} - {{ ingredient.recipe_ingredient.quantity }}{{ ingredient.unit }} = {{ ingredient.calories * ingredient.recipe_ingredient.quantity }} calories
           </li>
         </ul>
         <q-separator dark />
         <div class="text-center">
-          0 calories total
+          {{ recipe.totalKcal }} calories total
         </div>
       </q-card-section>
 
@@ -62,7 +62,7 @@ export default {
 <style lang="sass" scoped>
 .my-card
   width: 100%
-  max-width: 250px
+  max-width: 300px
 
 .centered-header 
   text-align: center
