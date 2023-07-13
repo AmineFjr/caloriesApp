@@ -91,7 +91,8 @@ export default {
   async created() {
     this.recipe = this.recipe
     const ingredientStore = useIngredientsStore();
-    this.recipe.author = 1
+    // this.recipe.author = this.sessionStorage.get("userId");
+    console.log("test user id " +  this.window.sessionStorage.get("userId"))
 
     try {
       const result = await ingredientStore.fetchIngredients();

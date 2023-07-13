@@ -50,14 +50,13 @@
         if (this.user.firstname && this.user.lastname && this.validateEmail(this.user.email) && this.user.password && this.user.password.length >= 6) {
           console.log(this.user);
 
-        // Utiliser le store pour mettre à jour la recette dans la base de données
-        const userStore = useUserStore();
-        try {
-        await userStore.createUser(this.user);
-        this.$router.push({ path: "/login" });
-      } catch (error) {
-        console.error("Erreur lors de la sauvegarde de la recette :", error);
-      }
+          const userStore = useUserStore();
+          try {
+          await userStore.createUser(this.user);
+          this.$router.push({ path: "/login" });
+        } catch (error) {
+          console.error("Erreur lors de la sauvegarde de la recette :", error);
+        }
 
         }
       },
