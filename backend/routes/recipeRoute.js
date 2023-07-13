@@ -5,7 +5,7 @@ const userAuth = require('../middleware/auth');
 
 
 router.get('/recipes', recipeController.getAllRecipes);
-router.post('/recipe', recipeController.addRecipes);
+router.post('/recipe', userAuth, recipeController.addRecipes);
 router.put('/recipe',  recipeController.updateRecipe);
 router.get('/recipe/:id', recipeController.getRecipeById);
 router.delete('/recipe/:id', recipeController.deleteRecipe);
