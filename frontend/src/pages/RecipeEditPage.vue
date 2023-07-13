@@ -15,7 +15,7 @@
       </div>
 
       <div class="q-gutter-sm row items-start">
-        <q-select color="teal-4" filled v-model="selectedIngredientId" :options="ingredients" option-value="id" option-label="name" label="Nouvel Ingrédient" class="col-xs-12 col-sm-6 col-md-4" />
+        <q-select use-input color="teal-4" filled v-model="selectedIngredientId" :options="ingredients" option-value="id" option-label="name" label="Nouvel Ingrédient" />
         <q-btn class="q-ml-sm" round color="teal-6" icon="add" @click="addNewIngredient" />
       </div>
 
