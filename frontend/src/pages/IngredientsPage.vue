@@ -46,7 +46,7 @@
 
     <!-- Update Form -->
     <div v-if="selectedIngredient" class="flex flex-center q-pa-md" style="max-width: 500px; margin: auto;">
-      <div style="width: 100%;">
+      <div style="width: 100%;" v-if="isUpdating">
         <q-input color="teal-4" filled v-model="selectedIngredient.name" label="Nom" />
         <q-input color="teal-4" filled v-model="selectedIngredient.unit" label="Unité" />
         <q-input color="teal-4" filled v-model="selectedIngredient.calories" label="Calories" />
@@ -54,6 +54,9 @@
           <q-btn color="teal-4" @click="updateSelectedIngredient">Mettre à jour</q-btn>
           <q-btn flat color="red" @click="cancelUpdate">Annuler</q-btn>
         </div>
+      </div>
+      <div v-else>
+        <q-btn color="teal-4" @click="isUpdating = !isUpdating">Modifier</q-btn>
       </div>
     </div>
   </div>
@@ -70,6 +73,7 @@ export default {
     const selectedIngredient = ref(null);
     const newIngredient = ref({ name: "", unit: "", calories: "" });
     const isAddingNew = ref(false);
+    const isUpdating = ref(false);
 
     const columns = [
       { name: 'name', required: true, label: 'Nom', align: 'left', field: 'name', sortable: true },
@@ -90,10 +94,12 @@ export default {
     function editRow(row) {
       if (!row || !row.id) return;
       selectedIngredient.value = { ...row };
+      isUpdating.value = true;
     }
 
     function cancelUpdate() {
       selectedIngredient.value = null;
+      isUpdating.value = false;
     }
 
     async function createIngredient() {
@@ -114,6 +120,7 @@ export default {
         const updatedIngredient = await store.updateIngredient(selectedIngredient.value);
         selectedIngredient.value = null;
         await store.fetchIngredients(); // Mettre à jour le tableau d'ingrédients
+        isUpdating.value = false;
       } catch (error) {
         console.error("Erreur lors de la mise à jour de l'ingrédient :", error);
       }
@@ -139,7 +146,9 @@ export default {
       updateSelectedIngredient,
       isAddingNew,
       newIngredient,
-      cancelNewIngredient
+      cancelNewIngredient,
+      isUpdating,
+      cancelUpdate
     }
   }
 }
