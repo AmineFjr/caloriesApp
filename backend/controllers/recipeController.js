@@ -1,10 +1,11 @@
 const recipeModel = require('../models/recipeModel');
 const recipeIngredientModel = require('../models/recipeIngredientModel');
-const userModel = require ('../models/userModel');
-const  ingredientModel = require ('../models/ingredientModel')
+const userModel = require('../models/userModel');
+const ingredientModel = require('../models/ingredientModel');
+const ingredientUtils = require('../utils/ingredients');
+const recipeUtils = require('../utils/recipe');
 
-async function getAllRecipes(req, res){
-
+async function getAllRecipes(req, res) {
     try {
         const recipes = await recipeModel.findAll({
             include: 'ingredients', // Inclure les ingrédients liés à la recette
@@ -33,25 +34,23 @@ async function getAllRecipes(req, res){
         return res.status(200).json(response);
     } catch (error) {
         const message = 'Une erreur est survenue lors de la recherche des ingrédients';
-        return res.status(404).json({message, error})
+        return res.status(404).json({ message, error })
     }
 }
 
 // Contrôleur pour récupérer une recette par son identifiant
-async function getRecipeById (req, res) {
+async function getRecipeById(req, res) {
     try {
         // Recherche de la recette par son identifiant
         let recipe = await recipeModel.findByPk(req.params.id, {
             include: 'ingredients' // Inclure les ingrédients liés à la recette
         });
+        let recipeWithUser = [];
 
-        if (!recipe) {
-            return res.status(404).json({ message: 'Recette introuvable.' });
-        }
+        if (!recipe) return res.status(404).json({ message: 'Recette introuvable.' });
 
         let user = await userModel.findByPk(recipe.userId);
 
-        let recipeWithUser = [];
         recipeWithUser.push({ recipe, user });
 
         const response = recipeWithUser.map(recipeWithUser => {
@@ -64,7 +63,7 @@ async function getRecipeById (req, res) {
                 ingredients: recipeWithUser.recipe.ingredients
             }
         })
-        return res.status(200).json(response[0]);
+        return res.status(200).json(response[(recipeWithUser.length) - 1]);
     } catch (error) {
         console.error('Erreur lors de la récupération de la recette :', error);
         return res.status(500).json({ message: 'Une erreur est survenue lors de la récupération de la recette.' });
@@ -106,38 +105,38 @@ async function addRecipes(req, res) {
 async function updateRecipe(req, res) {
     try {
 
-    let { id, ingredients } = req.body;
-    let recipe = await recipeIngredientModel.findAll({ where: { recipeId: id } })
-    let recipeToJson = recipe.map(recipeIngredient => recipeIngredient.toJSON());
-    let recipeIngredient = [];
+        let { id, ingredients } = req.body;
+        let recipe = await recipeIngredientModel.findAll({ where: { recipeId: id } })
+        let recipeToJson = recipe.map(recipeIngredient => recipeIngredient.toJSON());
+        let recipeIngredient = [];
 
-    for (let ingredient of ingredients) {
-        let recipeIngredientById = await recipeIngredientModel.findAll({ where: { ingredientId: ingredient.id_ingredient } })
-        recipeIngredient.push(...recipeIngredientById);
+        for (let ingredient of ingredients) {
+            let recipeIngredientById = await recipeIngredientModel.findAll({ where: { ingredientId: ingredient.id_ingredient } })
+            recipeIngredient.push(...recipeIngredientById);
 
-        let recipeIngredientFound = recipe.find(recipeIngredient => recipeIngredient.ingredientId === ingredient.id_ingredient);
+            let recipeIngredientFound = recipe.find(recipeIngredient => recipeIngredient.ingredientId === ingredient.id_ingredient);
 
-        if (recipeIngredientFound && recipeIngredientFound.ingredientId === ingredient.id_ingredient) {
+            if (recipeIngredientFound && recipeIngredientFound.ingredientId === ingredient.id_ingredient) {
 
-            recipeIngredientFound.quantity = ingredient.quantity;
-            await recipeIngredientFound.save();
+                recipeIngredientFound.quantity = ingredient.quantity;
+                await recipeIngredientFound.save();
 
-        } else {
-            await recipeIngredientModel.create({
-                ingredientId: ingredient.id_ingredient,
-                recipeId: id,
-                quantity: ingredient.quantity,
-                step: 1,
-            });
+            } else {
+                await recipeIngredientModel.create({
+                    ingredientId: ingredient.id_ingredient,
+                    recipeId: id,
+                    quantity: ingredient.quantity,
+                    step: 1,
+                });
+            }
         }
-    }
 
-    let findRecipeToDelete = recipeToJson.filter(obj1 => !recipeIngredient.some(obj2 => obj1['ingredientId'] === obj2['ingredientId']));
-    findRecipeToDelete.forEach(async (element) => {  
-        await recipeIngredientModel.destroy({ where: { ingredientId: element.ingredientId } });
-    });
+        let findRecipeToDelete = recipeToJson.filter(obj1 => !recipeIngredient.some(obj2 => obj1['ingredientId'] === obj2['ingredientId']));
+        findRecipeToDelete.forEach(async (element) => {
+            await recipeIngredientModel.destroy({ where: { ingredientId: element.ingredientId } });
+        });
 
-    res.status(200).json('Recette Modifiée');
+        res.status(200).json('Recette Modifiée');
 
     } catch (err) {
         res.status(500).json({ err, message: "Une erreur s'est produite" });
@@ -183,30 +182,31 @@ async function analyzeRecipe(req, res) {
 async function addRandomRecipe(req, res) {
     try {
         const { userId } = req.body;
+        let randomIngredients = await ingredientUtils.genrerateRandomIngredients();
+        let randomIngredientTitle = "Recette aléatoire uniqId: " + "id" + Math.random().toString(16).slice(2);
 
-        // Création de la recette dans la base de données
         recipeModel.create({
-            'title': 'Recette aléatoire',
+            title: randomIngredientTitle,
             userId
-        }).then(
-            (recipe) => {
-                for (let ingredient of ingredients) {
-                    recipeIngredientModel.create({
-                        ingredientId: ingredient.id,
-                        recipeId: recipe.id,
-                        quantity: ingredient.quantity,
-                        step: ingredient.step || null,
-                    })
-                }
+        }).then((recipe) => {
+            for (let ingredient of randomIngredients) {
+                recipeIngredientModel.create({
+                    ingredientId: ingredient.id,
+                    recipeId: recipe.id,
+                    quantity: Math.floor(Math.random() * 100) + 1,
+                    step: 1,
+                }); 
             }
-        ).then(
-            (response) => {
-                const message = 'Reccette ajoutée';
-                return res.status(201).json({ message });
-            }
-        );
+            return recipe;
+        })
+        .then(async (data) => {
+            response = await recipeUtils.getRandomRecipeInformationById(data.id)
+            return res.status(200).json(response);
+        });
+
+        
     } catch (err) {
-        console.error('Erreur lors de l\'ajout de la recette :', error);
+        console.error('Erreur lors de l\'ajout de la recette :', err);
         return res.status(500).json({ message: 'Une erreur est survenue lors de l\'ajout de la recette.' });
     }
 }
