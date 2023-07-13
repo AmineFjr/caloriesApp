@@ -43,8 +43,7 @@ exports.sign = (req, res) => {
                     }
 
                     let userId = user.id;
-
-                    const token = jwt.sign(
+                    let token = jwt.sign(
                         {userId: userId},
                         `${process.env.PRIVATE_KEY}`,
                         {algorithm: "HS256", expiresIn: "24h"}
