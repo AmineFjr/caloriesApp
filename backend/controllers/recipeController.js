@@ -12,9 +12,8 @@ async function getAllRecipes(req, res){
 
         const recipesWithUsers = [];
 
-        let totalKcal = 0;
-
         for (let recipe of recipes) {
+            let totalKcal = 0;
             const user = await userModel.findByPk(recipe.userId);
             for (let ingredient of recipe.ingredients) {
                 totalKcal += ingredient.calories * ingredient.recipe_ingredient.quantity;
