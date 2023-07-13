@@ -1,5 +1,4 @@
 <template>
- <q-page class="row justify-center q-pt-lg">
     <q-form class="q-gutter-md" style="width: 90%;" @submit="saveRecipe" >
       <q-input filled v-model="recipe.title" label="Titre" />
       <q-input filled v-model="recipe.author" label="Auteur" readonly/>
@@ -27,8 +26,8 @@
       </div>
 
       <div>
-        <q-btn class="q-mt-md" type="submit" color="teal-6" label="Save" style="margin: 5px" />
-        <q-btn class="q-mt-md" color="teal-6" label="Analyze" @click="onAnalyze" style="margin: 5px" />
+        <q-btn class="q-mt-md" type="submit" color="teal-6" label="Ajouter" style="margin: 5px" />
+        <q-btn class="q-mt-md" color="teal-6" label="Analyser" @click="onAnalyze" style="margin: 5px" />
       </div>
       
       <p v-if="duplicateIngredientError" style="color: red;">Cet ingrédient est déjà dans la recette.</p>
@@ -46,7 +45,6 @@
       </div>
     </div>
 
-  </q-page>
 </template>
 
 <script>
@@ -54,8 +52,10 @@ import { useQuasar } from "quasar";
 import { ref } from "vue";
 import { saveAs } from 'file-saver';
 import { json2csv } from 'json-2-csv';
-import { defineStore } from "pinia";
-import axios from "axios";
+
+import { useRecipesStore } from "../stores/recipe.js"; // Importez votre store
+import { useIngredientsStore } from "../stores/ingredient.js"; // Importez votre store pour les ingrédients
+
 // import CardComponents from "../components/CardComponents.vue";
 
 
@@ -69,186 +69,89 @@ export default {
     return {
       text,
       totalkcal,  
-      ////
-      ingredients: [
-        { id: 4, name: 'Fraise', unit: "gramme" },
-        { id: 5, name: 'Lait', unit: "centilitre"},
-        { id: 1, name: 'Pomme', unit: "gramme"},
-        { id: 2, name: 'Sucre', unit: "gramme"},
-        { id: 3, name: 'Pâte', unit: "gramme"}
-        // Ajoutez d'autres ingrédients ici
-      ],
-
-
     };
   },
   data() {
     return {
-      recipes: [
-        {
-          id: 1,
-          title: '',
-          author: 'test@test.com',
-          ingredients: [
-          
-          ],
-        },
-      ],
-      recipe: null,
+      recipe: {
+        id: null,
+        title: '',
+        author: '',
+        date: '',
+        ingredients: [],
+      },
+      ingredients: [],
       selectedIngredientId: null,
       newIngredient: { id: null, name: '', quantity: 0 },
       showNewIngredientInputs: false,
-      duplicateIngredientError: false, // Ajout de la propriété pour afficher l'erreur
-      generatedtable : {}
+      duplicateIngredientError: false,
+      generatedtable : []
     };   
   },
-  created() {
-    this.recipe = this.recipes.find((recipe) => recipe.id == 1);
+  async created() {
+    this.recipe = this.recipe
+    const ingredientStore = useIngredientsStore();
+    this.recipe.author = 1
+
+    try {
+      const result = await ingredientStore.fetchIngredients();
+      this.ingredients = result.ingredients;
+    } catch (error) {
+      console.error("Error fetching ingredients: ", error);
+    }
+
+    this.recipe.ingredients = this.recipe.ingredients.map(ingredient => {
+      const storeIngredient = this.ingredients.find(storeIng => storeIng.id === ingredient.id);
+      return {
+        ...ingredient,
+        quantity: ingredient.recipe_ingredient.quantity,
+        unit: storeIngredient ? storeIngredient.unit : ''
+      };
+    });
   },
   methods: {
  ////////////////////////Fonction d'analyse des calories
     onAnalyze() {      
-      this.generatedtable = {}
+      this.generatedtable = []
       var result = 0
       var data = this.recipe.ingredients
-      var dbingrediants = [ //fake data 
-    {
-        "id": "1",
-        "name": "Farine",
-        "unit": "g",
-        "calories": "700"
-    },
-    {
-        "id": "2",
-        "name": "Sucre",
-        "unit": "g",
-        "calories": "400"
-    },
-    {
-        "id": "3",
-        "name": "Pâte",
-        "unit": "g",
-        "calories": "350"
-    },
-    {
-        "id": "4",
-        "name": "Oeuf",
-        "unit": "",
-        "calories": "140"
-    },
-    {
-        "id": "5",
-        "name": "Levure",
-        "unit": "g",
-        "calories": "20"
-    },
-    {
-        "id": "6",
-        "name": "Vanille",
-        "unit": "cuillère à café",
-        "calories": "10"
-    },
-    {
-        "id": "7",
-        "name": "Chocolat noir",
-        "unit": "g",
-        "calories": "550"
-    },
-    {
-        "id": "8",
-        "name": "Lait",
-        "unit": "ml",
-        "calories": "100"
-    },
-    {
-        "id": "9",
-        "name": "Sel",
-        "unit": "g",
-        "calories": "0"
-    },
-    {
-        "id": "10",
-        "name": "Amandes",
-        "unit": "g",
-        "calories": "320"
-    },
-    {
-        "id": "11",
-        "name": "Miel",
-        "unit": "g",
-        "calories": "90"
-    },
-    {
-        "id": "12",
-        "name": "Levure chimique",
-        "unit": "cuillère à café",
-        "calories": "5"
-    },
-    {
-        "id": "13",
-        "name": "Cannelle",
-        "unit": "cuillère à café",
-        "calories": "6"
-    },
-    {
-        "id": "14",
-        "name": "Noix de coco râpée",
-        "unit": "g",
-        "calories": "185"
-    },
-    {
-        "id": "15",
-        "name": "Miel d'acacia",
-        "unit": "g",
-        "calories": "120"
-    },
-    {
-        "id": "16",
-        "name": "Framboises",
-        "unit": "g",
-        "calories": "64"
-    },
-    {
-        "id": "17",
-        "name": "Écorce d'orange confite",
-        "unit": "g",
-        "calories": "180"
-    }
-    ]
 
     
     for(var i in data)
     {
-      for(var j in dbingrediants)
+      for(var j in this.ingredients)
       {
-        if (data[i].name == dbingrediants[j].name)
+        if (data[i].name == this.ingredients[j].name)
         {
-          var cal = data[i].quantity * dbingrediants[j].calories
+          var cal = data[i].quantity * this.ingredients[j].calories
           result = result + cal ;
 
-          var element = {"name": data[i].name, "kcal": cal }
-          Object.assign(this.generatedtable,element);
+          var element = {name: data[i].name, kcal: cal }
+          this.generatedtable.push(element)
+          
         }
       }
       
     }
-   
+    console.log( ) 
     this.totalkcal = result;
     document.getElementById("analyze").hidden = false;
     },
 
     downloadJSON() {
       var data = this.generatedtable
-
+      var titlefile = this.recipe.title + "_rapportJSON.json"
+     
       var fileToSaveJSON = new Blob([JSON.stringify(data)], {
         type: 'application/json'
       });
-      saveAs(fileToSaveJSON, "rapportJSON.json");
+      saveAs(fileToSaveJSON, titlefile);
     },
 
     downloadCSV() {
       var data = this.generatedtable
-      
+      var titlefile = this.recipe.title + "_rapportCSV.csv"
+
       let options = {
         delimiter : 
         {
@@ -258,7 +161,7 @@ export default {
       json2csv(data,options) 
       .then((csv) => {
        var fileToSave = new Blob([csv], {type: 'text/csv;charset=utf-8;'})
-       saveAs(fileToSave, "rapportCSV.csv")})
+       saveAs(fileToSave, titlefile)})
       .catch((err) =>{ console.log(err)})
       
     },
@@ -278,7 +181,7 @@ export default {
       return ingredient ? ingredient.unit : '';
     },
 
-    saveRecipe() {
+    async saveRecipe() {
       // Check for duplicate ingredient
       const duplicateIngredient = this.recipe.ingredients.find(
         (ingredient) => ingredient.id === this.newIngredient.id
@@ -289,25 +192,33 @@ export default {
         return; // Arrêter l'exécution de la méthode
       }
 
-      // Update the recipe in the recipes array
-      const index = this.recipes.findIndex((recipe) => recipe.id == this.recipe.id);
-      if (index != -1) {
-        this.recipes[index] = this.recipe;
-      }
-
-      // Prepare the JSON format for logging
+      // Convertir les données de la recette au format souhaité
+      
       const recipeData = {
         title: this.recipe.title,
-        author : this.recipe.author,
+        userId : this.recipe.author,
         ingredients: this.recipe.ingredients.map((ingredient) => ({
-          id_ingredient: ingredient.id,
+          id: ingredient.id,
           quantity: ingredient.quantity,
+          step: 1,
         })),
       };
 
       // Log the JSON data
-      console.log(recipeData);
+      console.log(JSON.stringify(recipeData));
+
+
+      // Utiliser le store pour mettre à jour la recette dans la base de données
+      const recipeStore = useRecipesStore();
+      try {
+        await recipeStore.createRecipe(recipeData);
+        this.$router.push({ path: "/recipes" });
+      } catch (error) {
+        console.error("Erreur lors de la sauvegarde de la recette :", error);
+      }
+      
     },
+      
 
     addNewIngredient() {
       if (this.selectedIngredientId) {
@@ -327,6 +238,7 @@ export default {
 
         this.newIngredient.id = selectedIngredient.id;
         this.newIngredient.name = selectedIngredient.name;
+        this.newIngredient.unit = selectedIngredient.unit; // Ajoutez l'unité ici
         this.recipe.ingredients.push({ ...this.newIngredient });
         this.selectedIngredientId = null;
         this.newIngredient = { id: null, name: '', quantity: 0 };
