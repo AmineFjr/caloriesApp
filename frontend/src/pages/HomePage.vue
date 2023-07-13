@@ -1,7 +1,7 @@
 <template>
     <q-form class="q-gutter-md" style="width: 90%;" @submit="saveRecipe" >
       <q-input filled v-model="recipe.title" label="Titre" />
-      <q-input filled v-model="recipe.author" label="Auteur" readonly/>
+      <q-input filled v-model="recipe.author" label="Auteur" style="display: none" readonly/>
     
       <div class="q-mt-md" v-for="(ingredient, index) in recipe.ingredients" :key="index">
         <div class="q-gutter-sm row items-start">
