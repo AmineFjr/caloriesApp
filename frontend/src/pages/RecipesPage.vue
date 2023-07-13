@@ -3,7 +3,7 @@
     <q-card v-for="recipe in recipes" :key="recipe.id" class="my-card bg-teal-4 text-white">
       <q-card-section>
         <div class="text-h6">{{ recipe.title }}</div>
-        <div class="text-subtitle2">par {{ recipe.userId }} - {{ formatDate(recipe.createdAt) }}</div>
+        <div class="text-subtitle2">par {{ recipe.author }} - {{ formatDate(recipe.date) }}</div>
       </q-card-section>
       <q-separator dark />
       <q-card-section>
@@ -14,7 +14,7 @@
         </ul>
         <q-separator dark />
         <div class="text-center">
-          0 calories total
+          {{ recipe.totalKcal }} calories total
         </div>
       </q-card-section>
 
