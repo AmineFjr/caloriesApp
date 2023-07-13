@@ -39,6 +39,7 @@
         <q-input color="teal-4" filled v-model="newIngredient.calories" label="Calories" />
         <div class="text-center">
           <q-btn color="teal-4" @click="createIngredient">Créer</q-btn>
+          <q-btn flat color="red" @click="cancelNewIngredient">Annuler</q-btn>
         </div>
       </div>
     </div>
@@ -51,6 +52,7 @@
         <q-input color="teal-4" filled v-model="selectedIngredient.calories" label="Calories" />
         <div class="text-center">
           <q-btn color="teal-4" @click="updateSelectedIngredient">Mettre à jour</q-btn>
+          <q-btn flat color="red" @click="cancelUpdate">Annuler</q-btn>
         </div>
       </div>
     </div>
@@ -62,16 +64,16 @@ import { ref, onMounted, computed } from "vue";
 import { useIngredientsStore } from "../stores/ingredient.js";
 
 export default {
-  setup () { 
+  setup() {
     const store = useIngredientsStore();
     const ingredients = computed(() => store.ingredients);
     const selectedIngredient = ref(null);
     const newIngredient = ref({ name: "", unit: "", calories: "" });
     const isAddingNew = ref(false);
-    
+
     const columns = [
-      { name: 'name', required: true, label: 'Nom', align: 'left', field: 'name', sortable: true  },
-      { name: 'unit', required: true, label: 'Unité', align: 'left', field: 'unit', sortable: true  },
+      { name: 'name', required: true, label: 'Nom', align: 'left', field: 'name', sortable: true },
+      { name: 'unit', required: true, label: 'Unité', align: 'left', field: 'unit', sortable: true },
       { name: 'calories', required: true, label: 'Calories', align: 'left', field: 'calories', sortable: true },
       { name: 'actions', required: true, label: 'Actions', align: 'left', field: 'id', sortable: false },
     ]
@@ -88,6 +90,10 @@ export default {
     function editRow(row) {
       if (!row || !row.id) return;
       selectedIngredient.value = { ...row };
+    }
+
+    function cancelUpdate() {
+      selectedIngredient.value = null;
     }
 
     async function createIngredient() {
@@ -113,11 +119,14 @@ export default {
       }
     }
 
+    function cancelNewIngredient() {
+      newIngredient.value = { name: "", unit: "", calories: "" };
+      isAddingNew.value = false;
+    }
 
     onMounted(async () => {
       ingredients.value = await store.fetchIngredients();
     })
-
 
     return {
       filter: ref(''),
@@ -129,7 +138,8 @@ export default {
       createIngredient,
       updateSelectedIngredient,
       isAddingNew,
-      newIngredient
+      newIngredient,
+      cancelNewIngredient
     }
   }
 }
