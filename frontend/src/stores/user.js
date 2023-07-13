@@ -11,11 +11,13 @@ export const useUserStore = defineStore("user", {
   actions: {
     // Créer un user
     async createUser(newUser) {
+      console.log(newUser) ; 
       try {
         const response = await axios.post(
           "http://localhost:3000/api/user/signup",
           newUser,
         );
+          
         this.users.push(response.data);
       } catch (error) {
         console.error("Erreur lors de la création de l'user :", error);

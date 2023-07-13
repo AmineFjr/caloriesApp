@@ -1,12 +1,12 @@
 <template>
     <q-page class="row justify-center q-pt-lg">
       <q-form class="q-gutter-md" style="width: 60%;" @submit="saveUser">
-        <q-input color="teal-4" filled v-model="user.firstname" label="Prénom">
-          <div v-if="submitted && !user.firstname" class="text-negative">Le prénom est requis</div>
+        <q-input color="teal-4" filled v-model="user.firstName" label="Prénom">
+          <div v-if="submitted && !user.firstName" class="text-negative">Le prénom est requis</div>
         </q-input>
         
-        <q-input color="teal-4" filled v-model="user.lastname" label="Nom">
-          <div v-if="submitted && !user.lastname" class="text-negative">Le nom est requis</div>
+        <q-input color="teal-4" filled v-model="user.lastName" label="Nom">
+          <div v-if="submitted && !user.lastName" class="text-negative">Le nom est requis</div>
         </q-input>
         
         <q-input color="teal-4" filled v-model="user.email" type="email" label="Email">
@@ -47,7 +47,7 @@
       async saveUser(e) {
         e.preventDefault();
         this.submitted = true;
-        if (this.user.firstname && this.user.lastname && this.validateEmail(this.user.email) && this.user.password && this.user.password.length >= 6) {
+        if (this.user.firstName && this.user.lastName && this.validateEmail(this.user.email) && this.user.password && this.user.password.length >= 6) {
           console.log(this.user);
 
           const userStore = useUserStore();
@@ -58,7 +58,7 @@
           console.error("Erreur lors de la sauvegarde de la recette :", error);
         }
 
-        }
+      }
       },
       validateEmail(email) {
         var re = /\S+@\S+\.\S+/;
