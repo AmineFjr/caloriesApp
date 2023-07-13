@@ -7,6 +7,6 @@ routes.post('/signup', userCtrl.singUp);
 routes.post('/login', userCtrl.sign);
 routes.get('/:id', userCtrl.getUser);
 routes.put("/:id", userAuth, userCtrl.updateUser);
-routes.delete("/:id", userCtrl.deleteUser);
+routes.delete("/:id", userAuth, userCtrl.deleteUser);
 
 module.exports = routes;
