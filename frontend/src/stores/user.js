@@ -14,7 +14,7 @@ export const useUserStore = defineStore("user", {
       try {
         const response = await axios.post(
           "http://localhost:3000/api/user/signup",
-          newUser
+          newUser,
         );
         this.users.push(response.data);
       } catch (error) {
@@ -28,16 +28,14 @@ export const useUserStore = defineStore("user", {
             "http://localhost:3000/api/user/login",
             loginUser
           );
-          console.log(response.data)
-          sessionStorage.setItem("token", response.data.token);
-          sessionStorage.setItem("userId", response.data.userId);
-          sessionStorage.setItem("user", loginUser.email);
+          this.currentuser = [] ; 
+          this.currentuser.push({token : response.data.token});
+          this.currentuser.push({userId :  response.data.userId});
+          this.currentuser.push({email : loginUser.email});
           // this.users.push(response.data);
         } catch (error) {
           console.error("Erreur lors de la création de l'user :", error);
         }
       },
-
-
   },
 });
