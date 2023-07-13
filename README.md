@@ -688,5 +688,5 @@ Ajout d'un back office pour ajouter des aliments, modifier leur données, modifi
 L'api pour créer une recette aléatoire existe, mais le front n'existe pas. Système d'ajout d'aliment aléatoire dans une recette.
 
 ### Collection Postman 
-[Title](caloriesapp.postman_collection.json)
+[Lien](caloriesapp.postman_collection.json)
 
